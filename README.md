@@ -18,7 +18,6 @@ A estrutura de pastas e arquivos do projeto segue a arquitetura hexagonal (Ports
 
 - **core**: Contém a lógica de negócio da aplicação, independente de frameworks e detalhes de implementação.
 - **infra**: Camada de infraestrutura, responsável pela comunicação com tecnologias externas.
-- **tests**: Pastas para testes unitários, de integração e end-to-end.
 
 ## Domínios e Entidades
 
