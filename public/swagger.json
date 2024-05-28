@@ -1,0 +1,243 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"ClienteResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"nome",
+					"cpf",
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ClienteRequest": {
+				"properties": {
+					"nome": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"nome",
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ClienteCPFRequest": {
+				"properties": {
+					"cpf": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"cpf"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ItemResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"descricao": {
+						"type": "string"
+					},
+					"preco": {
+						"type": "number",
+						"format": "double"
+					},
+					"ingredientes": {
+						"type": "string"
+					},
+					"categoria": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"nome",
+					"descricao",
+					"preco",
+					"ingredientes",
+					"categoria"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ItemNovoRequest": {
+				"properties": {
+					"nome": {
+						"type": "string"
+					},
+					"descricao": {
+						"type": "string"
+					},
+					"preco": {
+						"type": "number",
+						"format": "double"
+					},
+					"ingredientes": {
+						"type": "string"
+					},
+					"categoria": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"nome",
+					"descricao",
+					"preco",
+					"ingredientes",
+					"categoria"
+				],
+				"type": "object",
+				"additionalProperties": true
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "app-tech-challenge",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/cliente": {
+			"post": {
+				"operationId": "SalvarEmail",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ClienteResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Cadastro do cliente: nome e e-mail",
+				"tags": [
+					"Cliente"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ClienteRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/cliente/cpf": {
+			"post": {
+				"operationId": "SalvarCPF",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ClienteResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Cadastro do cliente: apenas CPF",
+				"tags": [
+					"Cliente"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ClienteCPFRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/item": {
+			"post": {
+				"operationId": "SalvarNovoItem",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Cadastro de um item no cardápio",
+				"tags": [
+					"Item"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ItemNovoRequest"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

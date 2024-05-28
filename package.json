@@ -1,0 +1,38 @@
+{
+   "name": "app-tech-challenge",
+   "version": "1.0.0",
+   "main": "index.js",
+   "type": "commonjs",
+   "scripts": {
+      "build": "tsc",
+      "predev": "npm run swagger",
+      "prebuild": "npm run swagger",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "ts-node src/index.ts",
+      "swagger": "tsoa spec",
+      "typeorm": "typeorm-ts-node-commonjs"
+   },
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
+   "description": "",
+   "devDependencies": {
+      "@types/express": "^4.17.21",
+      "@types/morgan": "^1.9.9",
+      "@types/node": "^20.12.12",
+      "@types/swagger-ui-express": "^4.1.6",
+      "concurrently": "^8.2.2",
+      "ts-node": "10.9.1",
+      "typescript": "4.5.2"
+   },
+   "dependencies": {
+      "express": "^4.19.2",
+      "joi": "^17.13.1",
+      "morgan": "^1.10.0",
+      "pg": "^8.4.0",
+      "reflect-metadata": "^0.1.13",
+      "swagger-ui-express": "^5.0.0",
+      "tsoa": "^6.2.1",
+      "typeorm": "0.3.20"
+   }
+}
