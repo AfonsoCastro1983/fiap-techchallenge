@@ -6,8 +6,6 @@ import { Cliente } from "../../domain/entities/Cliente";
 import { Item } from "../../domain/entities/Item";
 import { Pedido, StatusPedido } from "../../domain/entities/Pedido";
 import { PedidoItem } from "../../domain/entities/PedidoItem";
-import { CPF } from "../../domain/valueobjects/CPF";
-import { Email } from "../../domain/valueobjects/Email";
 import { Preco } from "../../domain/valueobjects/Preco";
 import { CadastrarPedidoDto } from "./CadastrarPedidoDto";
 
@@ -19,19 +17,30 @@ export class CadastrarPedidoUseCase {
         const repPedidoItem = AppDataSource.getRepository(PedidoItemRepository);
         const pedido = new Pedido();
 
+        console.log("Busca pedido")
         //Pesquisa se o pedido já existe
         if (dto.id !== undefined) {
-            const pesq = await repPedido.findOneBy({ id: dto.id });
+            const pesq = await repPedido.findOne({where: {id: dto.id}, relations: ['cliente', 'pedidoItems'] });
             if (pesq) {
                 if (pesq.cliente) {
-                    pedido.cliente = new Cliente(pesq.cliente.id, pesq.cliente.nome, new Email(pesq.cliente.email), new CPF(pesq.cliente.cpf));
+                    pedido.cliente = new Cliente(pesq.cliente.id, pesq.cliente.nome);
                 }
-                pesq.pedidoItems.forEach(element => {
-                    pedido.adicionarItem(new Item(element.item.id, element.item.nome, element.item.descricao, new Preco(element.preco), element.item.ingredientes, element.item.categoria), element.quantidade);
+                const itens: PedidoItem[] = await Promise.all(
+                    pesq.pedidoItems.map(async (itemDto) => {
+                        const item = await repItem.findOneBy({ id: itemDto.id });
+                        if (!item) {
+                            throw new Error(`Item com ID ${itemDto.id} não encontrado.`);
+                        }
+                        return new PedidoItem(new Item(item.id, item.nome, item.descricao, new Preco(itemDto.preco), item.ingredientes, item.categoria), itemDto.quantidade);
+                    })
+                );
+                itens.forEach(element => {
+                    pedido.adicionarItem(element.item,element.quantidade.value);
                 });
+                console.log(pedido);
             }
         }
-        
+        console.log("Busca cliente")
         //Buscar cliente
         if (dto.cliente !== undefined) {
             const cliente = await repCliente.findOneBy({ id: dto.cliente });
@@ -44,7 +53,7 @@ export class CadastrarPedidoUseCase {
         else {
             pedido.cliente = undefined;
         }
-        
+        console.log("Busca itens pelo ID")
         // Buscar itens pelo ID
         if (dto.itens) {
             const itens: PedidoItem[] = await Promise.all(
@@ -68,7 +77,7 @@ export class CadastrarPedidoUseCase {
                 pedido.adicionarItem(element.item, element.quantidade.value);
             });
         }
-        
+        console.log("Pedido repository")
         let rep = new PedidoRepository();
         if (pedido.id > 0) {
             console.log('criação id já existente');
@@ -106,6 +115,7 @@ export class CadastrarPedidoUseCase {
             rep.pedidoItems.push(repPedItem);
         });
         console.log(rep.pedidoItems);
+        pedido.id = rep.id;
         await repPedidoItem.save(rep.pedidoItems);
 
         return pedido;
