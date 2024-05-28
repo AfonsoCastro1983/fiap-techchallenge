@@ -34,7 +34,7 @@ O sistema inclui as seguintes classes de domínio:
 
 1. **Clonar o repositório:**
     ```bash
-    git clone https://github.com/[seu-username]/lanchonete-api.git
+    [git clone https://github.com/[seu-username]/lanchonete-api.git](https://github.com/AfonsoCastro1983/fiap-techchallenge.git)
     ```
 
 2. **Instalar as dependências:**
