@@ -1,4 +1,3 @@
-```markdown
 # Lanchonete API - Pós-Tech FIAP - Arquitetura de Software
 
 Este repositório contém o código-fonte para a API backend de uma lanchonete, desenvolvido durante o primeiro módulo da Pós-Tech FIAP de Arquitetura de Software. O projeto foi criado utilizando a metodologia Domain Driven Design (DDD) e princípios de Arquitetura Hexagonal (Ports and Adapters), com o objetivo de criar um sistema escalável e testável.
