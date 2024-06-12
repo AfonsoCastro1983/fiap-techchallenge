@@ -34,9 +34,9 @@ O sistema inclui as seguintes classes de domínio:
 ## Comandos para Inicializar o Serviço
 
 1. **Clonar o repositório:**
-    ```bash
-    git clone https://github.com/[seu-username]/lanchonete-api.git
-    ```
+```
+git clone https://github.com/[seu-username]/lanchonete-api.git
+```
 
 2. **Instalar as dependências:**
     ```bash
