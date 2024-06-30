@@ -10,6 +10,8 @@ Este repositório contém o código-fonte para a API backend de uma lanchonete, 
 - **Docker Compose**: Ferramenta para orquestrar múltiplos serviços Docker.
 - **Swagger**: Ferramenta de documentação de APIs.
 - **Sequelize**: ORM (Object-Relational Mapping) para PostgreSQL.
+- **Amazon EKS**: Ferramenta de orquestração de kubernetes
+- **Código QR Mercado Pago**: Desenvolvimento da integração com o mercado pago para geração de QR-Codes e captura do pagamento
 
 ## Estrutura do Projeto
 

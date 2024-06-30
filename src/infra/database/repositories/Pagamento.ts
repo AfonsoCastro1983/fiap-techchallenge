@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { PedidoRepository } from './Pedido';
-import { StatusPagamento } from '../../../core/domain/entities/Pagamento';
+import { StatusPagamento } from '../../../shared/enums/StatusPagamento';
 
 @Entity()
 export class PagamentoRepository {
@@ -19,4 +19,11 @@ export class PagamentoRepository {
     @ManyToOne(() => PedidoRepository, { nullable: true })
     @JoinColumn({ name: 'pedidoId' })
     pedido!: PedidoRepository;
+
+    @Column({ type: 'string'})
+    identificador_pedido!: string;
+
+    @Column({ type: 'string'})
+    qrcode!: string;
+
 }

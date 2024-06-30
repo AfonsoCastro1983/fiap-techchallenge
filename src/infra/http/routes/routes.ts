@@ -1,12 +1,12 @@
 import express from "express";
 import ClienteController from "../controllers/ClienteController";
-import { CadastrarClienteUseCase } from "../../../core/usecases/cliente/CadastrarClienteUseCase";
+import { CadastrarClienteUseCase } from "../../../application/usecases/cliente/CadastrarClienteUseCase";
 import ItemController from "../controllers/ItemController";
-import { CadastrarItemUseCase } from "../../../core/usecases/item/CadastrarItemUseCase";
+import { CadastrarItemUseCase } from "../../../application/usecases/item/CadastrarItemUseCase";
 import PedidoController from "../controllers/PedidoController";
-import { CadastrarPedidoUseCase } from "../../../core/usecases/pedido/CadastrarPedidoUseCase";
+import { CadastrarPedidoUseCase } from "../../../application/usecases/pedido/CadastrarPedidoUseCase";
 import PagamentoController from "../controllers/PagamentoController";
-import { ExecutarPagamentoUseCase } from "../../../core/usecases/pagamento/ExecutarPagamentoUseCase";
+import { ExecutarPagamentoUseCase } from "../../../application/usecases/pagamento/ExecutarPagamentoUseCase";
 
 
 const router = express.Router()
@@ -16,7 +16,7 @@ const router = express.Router()
 router.post("/cliente", async (req, res) => {
     try {
         const controller = new ClienteController(new CadastrarClienteUseCase());
-        const cliente = await controller.salvarEmail(req.body);
+        const cliente = await controller.salvarCliente(req.body);
 
         return res.status(201).send({
             id: cliente.id,
@@ -32,10 +32,25 @@ router.post("/cliente", async (req, res) => {
 });
 
 ///ii. Identificação do cliente via CPF
-router.post("/cliente/cpf", async (req, res) => {
+router.get("/cliente/cpf/:cpf", async (req, res) => {
     try {
         const controller = new ClienteController(new CadastrarClienteUseCase());
-        const cliente = await controller.salvarCPF(req.body);
+        const cliente = await controller.buscarCPF(req.params.cpf);
+
+        return res.status(201).send({cliente});
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ erro: error.message });
+        }
+    }
+});
+
+///Identificação do cliente via Email
+router.get("/cliente/email/:email", async (req, res) => {
+    try {
+        const controller = new ClienteController(new CadastrarClienteUseCase());
+        const cliente = await controller.buscarEmail(req.params.email);
 
         return res.status(201).send({cliente});
     }

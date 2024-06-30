@@ -39,22 +39,14 @@
 					},
 					"email": {
 						"type": "string"
-					}
-				},
-				"required": [
-					"nome",
-					"email"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
-			"ClienteCPFRequest": {
-				"properties": {
+					},
 					"cpf": {
 						"type": "string"
 					}
 				},
 				"required": [
+					"nome",
+					"email",
 					"cpf"
 				],
 				"type": "object",
@@ -122,6 +114,272 @@
 				],
 				"type": "object",
 				"additionalProperties": true
+			},
+			"ItemModificarRequest": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"descricao": {
+						"type": "string"
+					},
+					"preco": {
+						"type": "number",
+						"format": "double"
+					},
+					"ingredientes": {
+						"type": "string"
+					},
+					"categoria": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"nome",
+					"descricao",
+					"preco",
+					"ingredientes",
+					"categoria"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"Categoria": {
+				"enum": [
+					"Lanche",
+					"Bebida",
+					"Acompanhamento",
+					"Sobremesa"
+				],
+				"type": "string"
+			},
+			"ItemRepository": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"descricao": {
+						"type": "string"
+					},
+					"preco": {
+						"type": "number",
+						"format": "double"
+					},
+					"ingredientes": {
+						"type": "string"
+					},
+					"categoria": {
+						"$ref": "#/components/schemas/Categoria"
+					}
+				},
+				"required": [
+					"id",
+					"nome",
+					"descricao",
+					"preco",
+					"ingredientes",
+					"categoria"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ItensArray": {
+				"properties": {
+					"itens": {
+						"items": {
+							"$ref": "#/components/schemas/ItemRepository"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"itens"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"PedidoResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"data": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"status": {
+						"type": "string"
+					},
+					"cliente": {
+						"type": "number",
+						"format": "double"
+					},
+					"total": {
+						"type": "number",
+						"format": "double"
+					},
+					"pedidoItems": {
+						"items": {
+							"properties": {
+								"quantidade": {
+									"type": "number",
+									"format": "double"
+								},
+								"preco": {
+									"type": "number",
+									"format": "double"
+								},
+								"itemId": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"quantidade",
+								"preco",
+								"itemId"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"data",
+					"status",
+					"total",
+					"pedidoItems"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"Pedidos": {
+				"properties": {
+					"pedidos": {
+						"items": {
+							"$ref": "#/components/schemas/PedidoResponse"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"pedidos"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"StatusPedido": {
+				"enum": [
+					"Novo",
+					"Enviado para Pagamento",
+					"Cancelado",
+					"Enviado para a Cozinha",
+					"Em Preparação",
+					"Preparado",
+					"Pronto para a entrega",
+					"Entregue"
+				],
+				"type": "string"
+			},
+			"PedidoRequest": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"cliente": {
+						"type": "number",
+						"format": "double"
+					},
+					"itens": {
+						"items": {
+							"properties": {
+								"quantidade": {
+									"type": "number",
+									"format": "double"
+								},
+								"preco": {
+									"type": "number",
+									"format": "double"
+								},
+								"itemId": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"quantidade",
+								"preco",
+								"itemId"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"status": {
+						"$ref": "#/components/schemas/StatusPedido"
+					}
+				},
+				"type": "object",
+				"additionalProperties": true
+			},
+			"PedidoStatusRequest": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"status": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"PagamentoResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"status": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"PagamentoRequest": {
+				"properties": {
+					"pedido": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"pedido"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {}
@@ -137,7 +395,7 @@
 	"paths": {
 		"/cliente": {
 			"post": {
-				"operationId": "SalvarEmail",
+				"operationId": "SalvarCliente",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -168,9 +426,9 @@
 				}
 			}
 		},
-		"/cliente/cpf": {
-			"post": {
-				"operationId": "SalvarCPF",
+		"/cliente/cpf/{cpf}": {
+			"get": {
+				"operationId": "BuscarCPF",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -183,22 +441,53 @@
 						}
 					}
 				},
-				"description": "Cadastro do cliente: apenas CPF",
+				"description": "Buscar por CPF",
 				"tags": [
 					"Cliente"
 				],
 				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/ClienteCPFRequest"
+				"parameters": [
+					{
+						"in": "path",
+						"name": "cpf",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/cliente/email/{email}": {
+			"get": {
+				"operationId": "BuscarEmail",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ClienteResponse"
+								}
 							}
 						}
 					}
-				}
+				},
+				"description": "Buscar por E-mail",
+				"tags": [
+					"Cliente"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "email",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/item": {
@@ -228,6 +517,334 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/ItemNovoRequest"
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"operationId": "EditarItem",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Modificar um item do cardápio",
+				"tags": [
+					"Item"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ItemModificarRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/item/{id}": {
+			"delete": {
+				"operationId": "EliminarItem",
+				"responses": {
+					"200": {
+						"description": "Verdadeiro se o item foi excluído ou falso se houve algum erro na excluão ou o item não existe",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					}
+				},
+				"description": "Elimina o item escolhido",
+				"tags": [
+					"Item"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "identificador do item",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/item/{categoria}": {
+			"get": {
+				"operationId": "BuscaItemPorCategoria",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItensArray"
+								}
+							}
+						}
+					}
+				},
+				"description": "Lista todos os itens por categoria",
+				"tags": [
+					"Item"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "categoria",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/pedido/id/{id}": {
+			"get": {
+				"operationId": "BuscaPorId",
+				"responses": {
+					"200": {
+						"description": "Lista de pedidos encontrados",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Pedidos"
+								}
+							}
+						}
+					}
+				},
+				"description": "Busca um pedido específico",
+				"tags": [
+					"Pedido"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "identificador do pedido",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/pedido/status/{status}": {
+			"get": {
+				"operationId": "BuscaPorStatus",
+				"responses": {
+					"200": {
+						"description": "Lista de pedidos encontrados",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Pedidos"
+								}
+							}
+						}
+					}
+				},
+				"description": "Busca pedidos por um status",
+				"tags": [
+					"Pedido"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "status do pedido",
+						"in": "path",
+						"name": "status",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/pedido": {
+			"post": {
+				"operationId": "CadastrarPedido",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PedidoResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Cadastrar pedido",
+				"tags": [
+					"Pedido"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PedidoRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/pedido/status": {
+			"put": {
+				"operationId": "AtualizarStatusPedido",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					}
+				},
+				"description": "Atualizar status de um pedido",
+				"tags": [
+					"Pedido"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PedidoStatusRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/pagamento/iniciar": {
+			"post": {
+				"operationId": "IniciarPagamento",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagamentoResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Iniciar processo de pagamento",
+				"tags": [
+					"Pagamento"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PagamentoRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/pagamento/confirmar": {
+			"post": {
+				"operationId": "ConfirmarPagamento",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagamentoResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Confirmar processo de pagamento",
+				"tags": [
+					"Pagamento"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PagamentoRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/pagamento/cancelar": {
+			"post": {
+				"operationId": "CancelarPagamento",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagamentoResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Pagamento"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PagamentoRequest"
 							}
 						}
 					}

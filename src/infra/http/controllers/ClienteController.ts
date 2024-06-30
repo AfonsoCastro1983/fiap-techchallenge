@@ -1,13 +1,10 @@
-import { Body, Post, Route, Tags } from "tsoa";
-import { CadastrarClienteDto } from "../../../core/usecases/cliente/CadastrarClienteDto";
-import { CadastrarClienteUseCase } from "../../../core/usecases/cliente/CadastrarClienteUseCase";
+import { Body, Path, Post, Get, Route, Tags } from "tsoa";
+import { CadastrarClienteDto } from "../../../application/usecases/cliente/CadastrarClienteDto";
+import { CadastrarClienteUseCase } from "../../../application/usecases/cliente/CadastrarClienteUseCase";
 
 export interface ClienteRequest {
     nome: string;
     email: string;
-}
-
-export interface ClienteCPFRequest {
     cpf: string;
 }
 
@@ -30,10 +27,11 @@ export default class ClienteController {
      * Cadastro do cliente: nome e e-mail
      */
     @Post("/")
-    public async salvarEmail(@Body() body: ClienteRequest): Promise<ClienteResponse> {
+    public async salvarCliente(@Body() body: ClienteRequest): Promise<ClienteResponse> {
         const dto: CadastrarClienteDto = {
             nome: body.nome,
             email: body.email,
+            cpf: body.cpf
         }
 
         const cliente = await this.cadastrarClienteUseCase.execute(dto);
@@ -46,16 +44,26 @@ export default class ClienteController {
         }
     }
     /**
-     * Cadastro do cliente: apenas CPF
+     * Buscar por CPF
      */
-    @Post("/cpf")
-    public async salvarCPF(@Body() body: ClienteCPFRequest): Promise<ClienteResponse> {
-        const dto: CadastrarClienteDto = {
-            nome: body.cpf,
-            cpf: body.cpf,
+    @Get("/cpf/:cpf")
+    public async buscarCPF(@Path() cpf: string): Promise<ClienteResponse> {
+        const cliente = await this.cadastrarClienteUseCase.buscarPorCPF(cpf);
+
+        return {
+            id: cliente.id,
+            nome: cliente.nome,
+            cpf: cliente.cpf?.value || "",
+            email: cliente.email?.value || "",
         }
 
-        const cliente = await this.cadastrarClienteUseCase.execute(dto);
+    }
+    /**
+     * Buscar por E-mail
+     */
+    @Get("/email/:email")
+    public async buscarEmail(@Path() email: string): Promise<ClienteResponse> {
+        const cliente = await this.cadastrarClienteUseCase.buscarPorEmail(email);
 
         return {
             id: cliente.id,

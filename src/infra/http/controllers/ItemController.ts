@@ -1,9 +1,9 @@
 import { Body, Post, Get, Route, Tags, Put, Delete, Path } from "tsoa";
-import { CadastrarItemUseCase } from "../../../core/usecases/item/CadastrarItemUseCase";
-import { CadastrarItemDto } from "../../../core/usecases/item/CadastrarItemDto";
-import { Categoria } from "../../../core/domain/entities/Item";
+import { CadastrarItemUseCase } from "../../../application/usecases/item/CadastrarItemUseCase";
+import { CadastrarItemDto } from "../../../application/usecases/item/CadastrarItemDto";
+import { Categoria } from "../../../shared/enums/Categoria";
 import { ItemRepository } from "../../database/repositories/Item";
-import { ListarItensUseCase } from "../../../core/usecases/item/ListarItensUseCase";
+import { ListarItensUseCase } from "../../../application/usecases/item/ListarItensUseCase";
 
 export interface ItemNovoRequest {
     nome: string;

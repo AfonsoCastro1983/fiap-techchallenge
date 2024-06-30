@@ -1,8 +1,8 @@
 import { Body, Post, Get, Route, Tags, Path, Put } from "tsoa";
-import { CadastrarPedidoDto } from "../../../core/usecases/pedido/CadastrarPedidoDto";
-import { CadastrarPedidoUseCase } from "../../../core/usecases/pedido/CadastrarPedidoUseCase";
-import { ListarPedidosUseCase } from "../../../core/usecases/pedido/ListarPedidoUseCase";
-import { PedidoRepository } from "../../database/repositories/Pedido";
+import { CadastrarPedidoDto } from "../../../application/usecases/pedido/CadastrarPedidoDto";
+import { CadastrarPedidoUseCase } from "../../../application/usecases/pedido/CadastrarPedidoUseCase";
+import { ListarPedidosUseCase } from "../../../application/usecases/pedido/ListarPedidoUseCase";
+import { IPedido } from "../../../application/interfaces/pedido/IPedido";
 
 export interface PedidoRequest extends CadastrarPedidoDto {
 }
@@ -34,7 +34,7 @@ export default class PedidoController {
         this.cadastrarPedidoUseCase = cadastrarPedidoUseCase;
     }
 
-    private formataResposta(pedidos: Array<PedidoRepository>) {
+    private formataResposta(pedidos: Array<IPedido>) {
         if (!pedidos || pedidos.length === 0) {
             throw new Error("Pedido não encontrado");
         }
@@ -46,11 +46,11 @@ export default class PedidoController {
             data: pedido.data,
             status: pedido.status,
             cliente: pedido.cliente === undefined || pedido.cliente === null ? 0 : pedido.cliente.id,
-            total: pedido.total,
-            pedidoItems: pedido.pedidoItems === undefined ? [] : pedido.pedidoItems.map(item => ({
-                itemId: item.id,
-                preco: item.preco,
-                quantidade: item.quantidade
+            total: pedido.valorTotal.valor,
+            pedidoItems: pedido.itens === undefined ? [] : pedido.itens.map(item => ({
+                itemId: item.item.id,
+                preco: item.item.preco.valor,
+                quantidade: item.quantidade.value
             }))
         }));
         return pedidosResponse;
@@ -61,7 +61,7 @@ export default class PedidoController {
      * @returns 
      * Lista de pedidos encontrados
      */
-    @Get("/:id")
+    @Get("/id/:id")
     public async buscaPorId(@Path() id: number): Promise<Pedidos> {
         const listaPedidos = new ListarPedidosUseCase();
         const pedidos = await listaPedidos.buscaPorID(id);
@@ -76,7 +76,7 @@ export default class PedidoController {
      * @returns 
      * Lista de pedidos encontrados
      */
-    @Get("/:status")
+    @Get("/status/:status")
     public async buscaPorStatus(@Path() status: string): Promise<Pedidos> {
         const listaPedidos = new ListarPedidosUseCase();
         const pedidos = await listaPedidos.buscaPorStatus(status);
@@ -102,7 +102,7 @@ export default class PedidoController {
 
         const pedidoResponse: PedidoResponse = {
             id: pedido.id,
-            data: pedido.dataCriacao,
+            data: pedido.data,
             status: pedido.status,
             cliente: pedido.cliente === undefined ? 0 : pedido.cliente.id,
             total: pedido.valorTotal.valor,
