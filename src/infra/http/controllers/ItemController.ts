@@ -1,6 +1,6 @@
 import { Body, Post, Get, Route, Tags, Put, Delete, Path } from "tsoa";
 import { CadastrarItemUseCase } from "../../../application/usecases/item/CadastrarItemUseCase";
-import { CadastrarItemDto } from "../../../application/usecases/item/CadastrarItemDto";
+import { CadastrarItemDto } from "../../../domain/dtos/CadastrarItemDto";
 import { Categoria } from "../../../shared/enums/Categoria";
 import { ItemRepository } from "../../database/repositories/Item";
 import { ListarItensUseCase } from "../../../application/usecases/item/ListarItensUseCase";

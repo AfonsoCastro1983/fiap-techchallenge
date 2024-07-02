@@ -1,6 +1,6 @@
 import { Cliente } from '../../../domain/entities/Cliente';
 import { ClienteRepository } from '../../../infra/database/repositories/Cliente';
-import { CadastrarClienteDto } from './CadastrarClienteDto';
+import { CadastrarClienteDto } from '../../../domain/dtos/CadastrarClienteDto';
 import { Email } from '../../../shared/valueobjects/Email';
 import { CPF } from '../../../shared/valueobjects/CPF';
 import { AppDataSource } from '../../../infra/database/data-source';
@@ -22,15 +22,18 @@ export class CadastrarClienteUseCase {
         let clienteRepository = new ClienteRepository();
         const repCliente = AppDataSource.getRepository(ClienteRepository);
 
-        if (cpf) {
+        if (cpf && cpf != "") {
+            console.log('CPF',cpf);
             const cliPesqCPF = await this.buscarPorCPF(cpf)
-            if (cliPesqCPF) {
+            if (cliPesqCPF && cliPesqCPF.id != 0) {
+                console.log('CPF',cliPesqCPF);
                 return cliPesqCPF;
             }
         }
-        else if (email && email != "") {
+        if (email && email != "") {
             const cliEmail = await this.buscarPorEmail(email)
-            if (cliEmail) {
+            if (cliEmail && cliEmail.id != 0) {
+                console.log('CPF',cliEmail);
                 return cliEmail
             }
         }
@@ -44,7 +47,7 @@ export class CadastrarClienteUseCase {
         clienteRepository = await repCliente.save(novo);
         console.log(clienteRepository);
 
-        const cliente = new Cliente(clienteRepository.id, clienteRepository.nome, emailObj, cpfObj);
+        const cliente = this.gerarClientePorRepositorio(clienteRepository);
 
         return cliente;
     }
@@ -60,7 +63,16 @@ export class CadastrarClienteUseCase {
     }
 
     private gerarClientePorRepositorio(repCliente: ClienteRepository): Cliente {
-        return new Cliente(repCliente.id, repCliente.nome, new Email(repCliente.email), new CPF(repCliente.cpf));
+        let emailObj: Email | undefined;
+        if (repCliente.email != "") {
+            emailObj = new Email(repCliente.email);
+        }
+
+        let cpfObj: CPF | undefined;
+        if (repCliente.cpf != "") {
+            cpfObj = new CPF(repCliente.cpf);
+        }
+        return new Cliente(repCliente.id, repCliente.nome, emailObj, cpfObj);
     }
 
     async buscarPorEmail(email: string): Promise<Cliente> {

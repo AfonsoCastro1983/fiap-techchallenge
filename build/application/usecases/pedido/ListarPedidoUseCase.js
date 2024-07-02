@@ -46,6 +46,7 @@ var Email_1 = require("../../../shared/valueobjects/Email");
 var CPF_1 = require("../../../shared/valueobjects/CPF");
 var Item_1 = require("../../../domain/entities/Item");
 var Preco_1 = require("../../../shared/valueobjects/Preco");
+var typeorm_1 = require("typeorm");
 var ListarPedidosUseCase = /** @class */ (function () {
     function ListarPedidosUseCase() {
     }
@@ -95,6 +96,24 @@ var ListarPedidosUseCase = /** @class */ (function () {
                         statusValido = StatusPedido_1.StatusPedido[status.toUpperCase()];
                         if (!statusValido) return [3 /*break*/, 2];
                         return [4 /*yield*/, repPedido.find({ where: { status: statusValido }, relations: ['cliente', 'pedidoItems'], order: { data: 'ASC' } })];
+                    case 1:
+                        repPedidos = _a.sent();
+                        return [2 /*return*/, this.converteArrayPedidos(repPedidos)];
+                    case 2: throw new Error('Status inválido');
+                }
+            });
+        });
+    };
+    ListarPedidosUseCase.prototype.buscaPorStatusModulo2 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var repPedido, statusValido, repPedidos;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        repPedido = data_source_1.AppDataSource.getRepository(Pedido_1.PedidoRepository);
+                        statusValido = [StatusPedido_1.StatusPedido.PRONTO_PARA_ENTREGA, StatusPedido_1.StatusPedido.EM_PREPARACAO, StatusPedido_1.StatusPedido.ENVIADO_PARA_A_COZINHA];
+                        if (!statusValido) return [3 /*break*/, 2];
+                        return [4 /*yield*/, repPedido.find({ where: { status: (0, typeorm_1.In)(statusValido) }, relations: ['cliente', 'pedidoItems'], order: { status: 'DESC', data: 'ASC' } })];
                     case 1:
                         repPedidos = _a.sent();
                         return [2 /*return*/, this.converteArrayPedidos(repPedidos)];

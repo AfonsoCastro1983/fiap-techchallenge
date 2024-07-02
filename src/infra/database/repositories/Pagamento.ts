@@ -20,10 +20,10 @@ export class PagamentoRepository {
     @JoinColumn({ name: 'pedidoId' })
     pedido!: PedidoRepository;
 
-    @Column({ type: 'string'})
+    @Column()
     identificador_pedido!: string;
 
-    @Column({ type: 'string'})
+    @Column()
     qrcode!: string;
 
 }

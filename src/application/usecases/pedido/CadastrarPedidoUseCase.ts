@@ -8,7 +8,7 @@ import { Pedido } from "../../../domain/entities/Pedido";
 import { StatusPedido } from "../../../shared/enums/StatusPedido";
 import { PedidoItem } from "../../../domain/entities/PedidoItem";
 import { Preco } from "../../../shared/valueobjects/Preco";
-import { CadastrarPedidoDto } from "./CadastrarPedidoDto";
+import { CadastrarPedidoDto } from "../../../domain/dtos/CadastrarPedidoDto";
 
 export class CadastrarPedidoUseCase {
     async execute(dto: CadastrarPedidoDto): Promise<Pedido> {

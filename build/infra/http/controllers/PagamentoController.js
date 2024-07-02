@@ -50,11 +50,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tsoa_1 = require("tsoa");
 var ExecutarPagamentoUseCase_1 = require("../../../application/usecases/pagamento/ExecutarPagamentoUseCase");
-var MercadoPagoService_1 = require("../../mercadopago/MercadoPagoService");
 var PagamentoController = /** @class */ (function () {
-    function PagamentoController(executarPagamentoUseCase) {
-        this.executarPagamentoUseCase = executarPagamentoUseCase;
-        this.integradorPagamentos = new MercadoPagoService_1.MercadoPagoService();
+    function PagamentoController(pagamentoUseCase, integradorPagamentos) {
+        this.pagamentoUseCase = pagamentoUseCase;
+        this.integradorPagamentos = integradorPagamentos;
     }
     /**
      * Iniciar processo de pagamento
@@ -65,12 +64,13 @@ var PagamentoController = /** @class */ (function () {
             var pagamento;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.executarPagamentoUseCase.iniciar(body.pedido, this.integradorPagamentos)];
+                    case 0: return [4 /*yield*/, this.pagamentoUseCase.iniciar(body.pedido, this.integradorPagamentos)];
                     case 1:
                         pagamento = _a.sent();
                         return [2 /*return*/, {
                                 id: pagamento.id,
-                                status: pagamento.status
+                                status: pagamento.status,
+                                qrCode: pagamento.qrCode
                             }];
                 }
             });
@@ -78,35 +78,99 @@ var PagamentoController = /** @class */ (function () {
     };
     /**
      * Confirmar processo de pagamento
+     * @deprecated (OBSOLETO) FASE 1 TECH-CHALLENGE
      */
     PagamentoController.prototype.confirmarPagamento = function (body) {
         return __awaiter(this, void 0, void 0, function () {
             var pagamento;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.executarPagamentoUseCase.pago(body.pedido)];
+                    case 0: return [4 /*yield*/, this.pagamentoUseCase.pago(body.pedido)];
                     case 1:
                         pagamento = _a.sent();
                         return [2 /*return*/, {
                                 id: pagamento.id,
-                                status: pagamento.status
+                                status: pagamento.status,
+                                qrCode: pagamento.qrCode
                             }];
                 }
             });
         });
     };
+    /**
+     * Cancelar processo de pagamento
+     * @deprecated (OBSOLETO) FASE 1 TECH-CHALLENGE
+     */
     PagamentoController.prototype.cancelarPagamento = function (body) {
         return __awaiter(this, void 0, void 0, function () {
             var pagamento;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.executarPagamentoUseCase.cancelar(body.pedido)];
+                    case 0: return [4 /*yield*/, this.pagamentoUseCase.cancelar(body.pedido)];
                     case 1:
                         pagamento = _a.sent();
                         return [2 /*return*/, {
                                 id: pagamento.id,
-                                status: pagamento.status
+                                status: pagamento.status,
+                                qrCode: pagamento.qrCode
                             }];
+                }
+            });
+        });
+    };
+    /**
+     * Buscar o status de pagamento de um pedido
+     */
+    PagamentoController.prototype.buscarStatusPedido = function (pedido) {
+        return __awaiter(this, void 0, void 0, function () {
+            var pagamento;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.pagamentoUseCase.consultaStatus(pedido)];
+                    case 1:
+                        pagamento = _a.sent();
+                        return [2 /*return*/, {
+                                id: pagamento.id,
+                                status: pagamento.status,
+                                qrCode: pagamento.qrCode
+                            }];
+                }
+            });
+        });
+    };
+    /**
+     * Receber confirmação de pagamento do Integrador
+     */
+    PagamentoController.prototype.receberStatusPagamentoIntegrador = function (payload) {
+        return __awaiter(this, void 0, void 0, function () {
+            var respostaIntegrador, pagto, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, this.integradorPagamentos.tratarRetorno(payload)];
+                    case 1:
+                        respostaIntegrador = _b.sent();
+                        if (!((respostaIntegrador) && (respostaIntegrador.status == "closed"))) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.pagamentoUseCase.consultaPedidoIntegrador(respostaIntegrador.id_pagamento)];
+                    case 2:
+                        pagto = _b.sent();
+                        if (pagto) {
+                            if (respostaIntegrador.pago) {
+                                this.pagamentoUseCase.pago(pagto.pedido);
+                            }
+                            else {
+                                this.pagamentoUseCase.cancelar(pagto.pedido);
+                            }
+                        }
+                        _b.label = 3;
+                    case 3: return [2 /*return*/, {
+                            ok: true
+                        }];
+                    case 4:
+                        _a = _b.sent();
+                        throw new Error('Erro no tratamento do payload de retorno do integrador');
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -132,10 +196,24 @@ var PagamentoController = /** @class */ (function () {
         __metadata("design:paramtypes", [Object]),
         __metadata("design:returntype", Promise)
     ], PagamentoController.prototype, "cancelarPagamento", null);
+    __decorate([
+        (0, tsoa_1.Get)("/status/:pedido"),
+        __param(0, (0, tsoa_1.Path)()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Number]),
+        __metadata("design:returntype", Promise)
+    ], PagamentoController.prototype, "buscarStatusPedido", null);
+    __decorate([
+        (0, tsoa_1.Post)("/webhook"),
+        __param(0, (0, tsoa_1.Body)()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [String]),
+        __metadata("design:returntype", Promise)
+    ], PagamentoController.prototype, "receberStatusPagamentoIntegrador", null);
     PagamentoController = __decorate([
         (0, tsoa_1.Route)("pagamento"),
         (0, tsoa_1.Tags)("Pagamento"),
-        __metadata("design:paramtypes", [ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase])
+        __metadata("design:paramtypes", [ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase, Object])
     ], PagamentoController);
     return PagamentoController;
 }());

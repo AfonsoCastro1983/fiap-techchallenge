@@ -3,8 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Pagamento = void 0;
 var StatusPagamento_1 = require("../../shared/enums/StatusPagamento");
 var Pagamento = /** @class */ (function () {
-    function Pagamento(id, valor) {
+    function Pagamento(id, pedido, valor) {
         this._id = id;
+        this._pedido = pedido;
         this._valor = valor;
         this._status = StatusPagamento_1.StatusPagamento.AGUARDANDO_RESPOSTA;
         this._dataCriacao = new Date();
@@ -38,6 +39,13 @@ var Pagamento = /** @class */ (function () {
     Object.defineProperty(Pagamento.prototype, "dataCriacao", {
         get: function () {
             return this._dataCriacao;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Pagamento.prototype, "pedido", {
+        get: function () {
+            return this._pedido;
         },
         enumerable: false,
         configurable: true

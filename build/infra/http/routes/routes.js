@@ -48,9 +48,10 @@ var PedidoController_1 = __importDefault(require("../controllers/PedidoControlle
 var CadastrarPedidoUseCase_1 = require("../../../application/usecases/pedido/CadastrarPedidoUseCase");
 var PagamentoController_1 = __importDefault(require("../controllers/PagamentoController"));
 var ExecutarPagamentoUseCase_1 = require("../../../application/usecases/pagamento/ExecutarPagamentoUseCase");
+var MercadoPagoService_1 = require("../../mercadopago/MercadoPagoService");
 var router = express_1.default.Router();
 //Clientes
-///i. Cadastro de clientes
+///1ªFase - Entregáveis 2 - i. Cadastro de clientes
 router.post("/cliente", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var controller, cliente, error_1;
     return __generator(this, function (_a) {
@@ -77,7 +78,7 @@ router.post("/cliente", function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); });
-///ii. Identificação do cliente via CPF
+///1ªFase - Entregáveis 2 - ii. Identificação do cliente via CPF
 router.get("/cliente/cpf/:cpf", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var controller, cliente, error_2;
     return __generator(this, function (_a) {
@@ -122,7 +123,7 @@ router.get("/cliente/email/:email", function (req, res) { return __awaiter(void 
     });
 }); });
 //Item = Produto individual disponível no cardápio da lanchonete (ex: sanduíche, batata frita, refrigerante)
-///iii. Criar
+///1ªFase - Entregáveis 2 - iii. Criar
 router.post("/item", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var controller, item, error_4;
     return __generator(this, function (_a) {
@@ -144,7 +145,7 @@ router.post("/item", function (req, res) { return __awaiter(void 0, void 0, void
         }
     });
 }); });
-///iii. Editar
+///1ªFase - Entregáveis 2 - iii. Editar
 router.put("/item", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var controller, item, error_5;
     return __generator(this, function (_a) {
@@ -166,7 +167,7 @@ router.put("/item", function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
-///iii. Remover
+///1ªFase - Entregáveis 2 - iii. Remover
 router.delete("/item/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var controller, resposta, error_6;
     return __generator(this, function (_a) {
@@ -194,7 +195,7 @@ router.delete("/item/:id", function (req, res) { return __awaiter(void 0, void 0
         }
     });
 }); });
-///iv. Buscar item por categoria
+///1ªFase - Entregáveis 2 - iv. Buscar item por categoria
 router.get("/item/:categoria", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var controller, resposta, error_7;
     return __generator(this, function (_a) {
@@ -217,7 +218,7 @@ router.get("/item/:categoria", function (req, res) { return __awaiter(void 0, vo
     });
 }); });
 //Pagamento
-///v. Fake checkout
+///1ªFase - Entregáveis 2 - v. Fake checkout
 ////Iniciar pagamento
 router.post("/pagamento/iniciar", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var controller, resposta, error_8;
@@ -225,7 +226,7 @@ router.post("/pagamento/iniciar", function (req, res) { return __awaiter(void 0,
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase());
+                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService());
                 return [4 /*yield*/, controller.iniciarPagamento(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -247,7 +248,7 @@ router.post("/pagamento/confirmar", function (req, res) { return __awaiter(void 
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase());
+                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService());
                 return [4 /*yield*/, controller.confirmarPagamento(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -269,7 +270,7 @@ router.post("/pagamento/cancelar", function (req, res) { return __awaiter(void 0
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase());
+                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService());
                 return [4 /*yield*/, controller.cancelarPagamento(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -284,19 +285,32 @@ router.post("/pagamento/cancelar", function (req, res) { return __awaiter(void 0
         }
     });
 }); });
-//Pedido
-///Gravar pedido
-router.post("/pedido", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var controller, item, error_11;
+////Webhook de atualização de status de pagamento
+router.post("/pagamento/webhook", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        try {
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                return [2 /*return*/, res.status(500).json({ erro: error.message })];
+            }
+        }
+        return [2 /*return*/];
+    });
+}); });
+///2ªFase - Entregáveis 1 - a.iii Webhook para receber confirmação de pagamento aprovado ou recusado
+////2ªFase - Entregáveis 1 - a.ii
+router.get("/pagamento/status/:pedido", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var controller, resposta, error_11;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PedidoController_1.default(new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase());
-                return [4 /*yield*/, controller.cadastrarPedido(req.body)];
+                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService());
+                return [4 /*yield*/, controller.buscarStatusPedido(Number(req.params.pedido))];
             case 1:
-                item = _a.sent();
-                return [2 /*return*/, res.status(201).send(item)];
+                resposta = _a.sent();
+                return [2 /*return*/, res.status(200).json(resposta)];
             case 2:
                 error_11 = _a.sent();
                 if (error_11 instanceof Error) {
@@ -307,15 +321,16 @@ router.post("/pedido", function (req, res) { return __awaiter(void 0, void 0, vo
         }
     });
 }); });
-///Atualizar status do pedido
-router.put("/pedido/status", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+//Pedido
+///2ªFase - Entregáveis 1 - Gravar pedido
+router.post("/pedido", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var controller, item, error_12;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 controller = new PedidoController_1.default(new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase());
-                return [4 /*yield*/, controller.atualizarStatusPedido(req.body)];
+                return [4 /*yield*/, controller.cadastrarPedido(req.body)];
             case 1:
                 item = _a.sent();
                 return [2 /*return*/, res.status(201).send(item)];
@@ -329,9 +344,31 @@ router.put("/pedido/status", function (req, res) { return __awaiter(void 0, void
         }
     });
 }); });
-///vi. Listar pedidos
+///2ªFase - Entregáveis 1 - v. Atualizar status do pedido
+router.put("/pedido/status", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var controller, item, error_13;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                controller = new PedidoController_1.default(new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase());
+                return [4 /*yield*/, controller.atualizarStatusPedido(req.body)];
+            case 1:
+                item = _a.sent();
+                return [2 /*return*/, res.status(201).send(item)];
+            case 2:
+                error_13 = _a.sent();
+                if (error_13 instanceof Error) {
+                    return [2 /*return*/, res.status(500).json({ erro: error_13.message })];
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+///1ªFase - Entregáveis 2 - vi. Listar pedidos
 router.get("/pedido/:status", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var controller, resposta, error_13;
+    var controller, resposta, error_14;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -348,18 +385,49 @@ router.get("/pedido/:status", function (req, res) { return __awaiter(void 0, voi
                 }
                 return [3 /*break*/, 3];
             case 2:
-                error_13 = _a.sent();
-                if (error_13 instanceof Error) {
-                    return [2 /*return*/, res.status(500).json({ erro: error_13.message })];
+                error_14 = _a.sent();
+                if (error_14 instanceof Error) {
+                    return [2 /*return*/, res.status(500).json({ erro: error_14.message })];
                 }
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
     });
 }); });
-///buscar pedido
+///2ªFase - Entregáveis 1 - iv. Lista de pedidos deverá retorná-los com sudas descrições ordenados na seguinte regra
+////1. Pronto (PRONTO_PARA_ENTREGA) > Em Preparação (EM_PREPARACAO) > Recebido (ENVIADO_PARA_A_COZINHA)
+////2. Pedidos mais antigos primeiro e mais novos depois
+////3. Pedidos com status Finalizado (ENTREGUE) não devem aparecer na lista
+router.get("/pedido/status", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var controller, resposta, error_15;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                controller = new PedidoController_1.default(new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase());
+                return [4 /*yield*/, controller.buscaPorStatusModulo2()];
+            case 1:
+                resposta = _a.sent();
+                if (resposta) {
+                    return [2 /*return*/, res.status(201).send(resposta)];
+                }
+                else {
+                    return [2 /*return*/, res.status(404).send("Pedido não encontrado")];
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                error_15 = _a.sent();
+                if (error_15 instanceof Error) {
+                    return [2 /*return*/, res.status(500).json({ erro: error_15.message })];
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+///Buscar pedido
 router.get("/pedido/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var controller, resposta, error_14;
+    var controller, resposta, error_16;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -376,9 +444,9 @@ router.get("/pedido/:id", function (req, res) { return __awaiter(void 0, void 0,
                 }
                 return [3 /*break*/, 3];
             case 2:
-                error_14 = _a.sent();
-                if (error_14 instanceof Error) {
-                    return [2 /*return*/, res.status(500).json({ erro: error_14.message })];
+                error_16 = _a.sent();
+                if (error_16 instanceof Error) {
+                    return [2 /*return*/, res.status(500).json({ erro: error_16.message })];
                 }
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];

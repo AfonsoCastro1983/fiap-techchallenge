@@ -97,6 +97,19 @@ var MercadoPagoService = /** @class */ (function () {
             });
         });
     };
+    MercadoPagoService.prototype.tratarRetorno = function (body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var transacao;
+            return __generator(this, function (_a) {
+                transacao = JSON.parse(body);
+                return [2 /*return*/, {
+                        id_pagamento: transacao.id,
+                        status: transacao.status,
+                        pago: transacao.order_status == "paid"
+                    }];
+            });
+        });
+    };
     return MercadoPagoService;
 }());
 exports.MercadoPagoService = MercadoPagoService;

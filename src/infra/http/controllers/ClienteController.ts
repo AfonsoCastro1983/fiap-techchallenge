@@ -1,5 +1,5 @@
 import { Body, Path, Post, Get, Route, Tags } from "tsoa";
-import { CadastrarClienteDto } from "../../../application/usecases/cliente/CadastrarClienteDto";
+import { CadastrarClienteDto } from "../../../domain/dtos/CadastrarClienteDto";
 import { CadastrarClienteUseCase } from "../../../application/usecases/cliente/CadastrarClienteUseCase";
 
 export interface ClienteRequest {

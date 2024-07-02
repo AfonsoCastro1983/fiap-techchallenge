@@ -359,11 +359,15 @@
 					},
 					"status": {
 						"type": "string"
+					},
+					"qrCode": {
+						"type": "string"
 					}
 				},
 				"required": [
 					"id",
-					"status"
+					"status",
+					"qrCode"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -377,6 +381,18 @@
 				},
 				"required": [
 					"pedido"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"WebhookResponse": {
+				"properties": {
+					"ok": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"ok"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -669,7 +685,7 @@
 						}
 					}
 				},
-				"description": "Busca pedidos por um status",
+				"description": "Busca pedidos por um status específico",
 				"tags": [
 					"Pedido"
 				],
@@ -685,6 +701,60 @@
 						}
 					}
 				]
+			}
+		},
+		"/pedido/status": {
+			"get": {
+				"operationId": "BuscaPorStatusModulo2",
+				"responses": {
+					"200": {
+						"description": "Lista de pedidos encontrados",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Pedidos"
+								}
+							}
+						}
+					}
+				},
+				"description": "Busca pedidos pelos status descritos no módulo 2 (Pronto (PRONTO_PARA_ENTREGA) > Em Preparação (EM_PREPARACAO) > Recebido (ENVIADO_PARA_A_COZINHA))",
+				"tags": [
+					"Pedido"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "AtualizarStatusPedido",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					}
+				},
+				"description": "Atualizar status de um pedido",
+				"tags": [
+					"Pedido"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PedidoStatusRequest"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/pedido": {
@@ -714,39 +784,6 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/PedidoRequest"
-							}
-						}
-					}
-				}
-			}
-		},
-		"/pedido/status": {
-			"put": {
-				"operationId": "AtualizarStatusPedido",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "boolean"
-								}
-							}
-						}
-					}
-				},
-				"description": "Atualizar status de um pedido",
-				"tags": [
-					"Pedido"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/PedidoStatusRequest"
 							}
 						}
 					}
@@ -805,6 +842,7 @@
 				"tags": [
 					"Pagamento"
 				],
+				"deprecated": true,
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -834,6 +872,74 @@
 						}
 					}
 				},
+				"description": "Cancelar processo de pagamento",
+				"tags": [
+					"Pagamento"
+				],
+				"deprecated": true,
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PagamentoRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/pagamento/status/{pedido}": {
+			"get": {
+				"operationId": "BuscarStatusPedido",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagamentoResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Buscar o status de pagamento de um pedido",
+				"tags": [
+					"Pagamento"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "pedido",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/pagamento/webhook": {
+			"post": {
+				"operationId": "ReceberStatusPagamentoIntegrador",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/WebhookResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Receber confirmação de pagamento do Integrador",
 				"tags": [
 					"Pagamento"
 				],
@@ -844,7 +950,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/PagamentoRequest"
+								"type": "string"
 							}
 						}
 					}

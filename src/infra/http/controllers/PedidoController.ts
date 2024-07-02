@@ -1,5 +1,5 @@
 import { Body, Post, Get, Route, Tags, Path, Put } from "tsoa";
-import { CadastrarPedidoDto } from "../../../application/usecases/pedido/CadastrarPedidoDto";
+import { CadastrarPedidoDto } from "../../../domain/dtos/CadastrarPedidoDto";
 import { CadastrarPedidoUseCase } from "../../../application/usecases/pedido/CadastrarPedidoUseCase";
 import { ListarPedidosUseCase } from "../../../application/usecases/pedido/ListarPedidoUseCase";
 import { IPedido } from "../../../application/interfaces/pedido/IPedido";
@@ -71,7 +71,7 @@ export default class PedidoController {
         return { pedidos: pedidosResponse };
     }
     /**
-     * Busca pedidos por um status
+     * Busca pedidos por um status específico
      * @param status status do pedido
      * @returns 
      * Lista de pedidos encontrados
@@ -80,6 +80,20 @@ export default class PedidoController {
     public async buscaPorStatus(@Path() status: string): Promise<Pedidos> {
         const listaPedidos = new ListarPedidosUseCase();
         const pedidos = await listaPedidos.buscaPorStatus(status);
+
+        const pedidosResponse: PedidoResponse[] = this.formataResposta(pedidos);
+
+        return { pedidos: pedidosResponse };
+    }
+    /**
+     * Busca pedidos pelos status descritos no módulo 2 (Pronto (PRONTO_PARA_ENTREGA) > Em Preparação (EM_PREPARACAO) > Recebido (ENVIADO_PARA_A_COZINHA))
+     * @returns 
+     * Lista de pedidos encontrados
+     */
+    @Get("/status/")
+    public async buscaPorStatusModulo2(): Promise<Pedidos> {
+        const listaPedidos = new ListarPedidosUseCase();
+        const pedidos = await listaPedidos.buscaPorStatusModulo2();
 
         const pedidosResponse: PedidoResponse[] = this.formataResposta(pedidos);
 

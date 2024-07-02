@@ -64,6 +64,13 @@ var ExecutarPagamentoUseCase = /** @class */ (function () {
             });
         });
     };
+    ExecutarPagamentoUseCase.prototype.converterRepository = function (pagamentoRepository) {
+        var pagamento = new Pagamento_2.Pagamento(pagamentoRepository.id, pagamentoRepository.pedido.id, new Preco_1.Preco(pagamentoRepository.valor));
+        pagamento.status = pagamentoRepository.status;
+        pagamento.identificadorPedido = pagamentoRepository.identificador_pedido;
+        pagamento.qrCode = pagamentoRepository.qrcode;
+        return pagamento;
+    };
     ExecutarPagamentoUseCase.prototype.iniciar = function (pedido, integradorPagamentos) {
         return __awaiter(this, void 0, void 0, function () {
             var repPagamento, rep, buscaPedido, _a, _b, pagamento, mudarStatusPedido, resposta, _c, _d;
@@ -85,7 +92,7 @@ var ExecutarPagamentoUseCase = /** @class */ (function () {
                         return [4 /*yield*/, repPagamento.save(rep)];
                     case 3:
                         rep = _e.sent();
-                        pagamento = new Pagamento_2.Pagamento(rep.id, new Preco_1.Preco(rep.valor));
+                        pagamento = new Pagamento_2.Pagamento(rep.id, pedido, new Preco_1.Preco(rep.valor));
                         mudarStatusPedido = new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase();
                         mudarStatusPedido.atualizaPedido(pedido, "ENVIAR_PARA_PAGAMENTO");
                         _d = (_c = integradorPagamentos).gerarQRCode;
@@ -132,7 +139,7 @@ var ExecutarPagamentoUseCase = /** @class */ (function () {
                         return [3 /*break*/, 5];
                     case 4: throw new Error('Pagamento não encontrado');
                     case 5:
-                        pagamento = new Pagamento_2.Pagamento(rep.id, new Preco_1.Preco(rep.valor));
+                        pagamento = new Pagamento_2.Pagamento(rep.id, pedido, new Preco_1.Preco(rep.valor));
                         pagamento.status = StatusPagamento_1.StatusPagamento.PAGO;
                         mudarStatusPedido = new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase();
                         mudarStatusPedido.atualizaPedido(pedido, "ENVIADO_PARA_A_COZINHA");
@@ -167,11 +174,53 @@ var ExecutarPagamentoUseCase = /** @class */ (function () {
                         return [3 /*break*/, 5];
                     case 4: throw new Error('Pagamento não encontrado');
                     case 5:
-                        pagamento = new Pagamento_2.Pagamento(rep.id, new Preco_1.Preco(rep.valor));
+                        pagamento = new Pagamento_2.Pagamento(rep.id, rep.pedido.id, new Preco_1.Preco(rep.valor));
                         pagamento.status = StatusPagamento_1.StatusPagamento.CANCELADO;
                         mudarStatusPedido = new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase();
                         mudarStatusPedido.atualizaPedido(pedido, "cancelado");
                         return [2 /*return*/, pagamento];
+                }
+            });
+        });
+    };
+    ExecutarPagamentoUseCase.prototype.consultaStatus = function (nro_pedido) {
+        return __awaiter(this, void 0, void 0, function () {
+            var repPagamento, pedido, rep, _a, pagRepository;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        repPagamento = data_source_1.AppDataSource.getRepository(Pagamento_1.PagamentoRepository);
+                        pedido = this.busca_pedido(nro_pedido);
+                        rep = new Pagamento_1.PagamentoRepository();
+                        _a = rep.pedido;
+                        return [4 /*yield*/, pedido];
+                    case 1:
+                        _a.id = (_b.sent()).id;
+                        return [4 /*yield*/, repPagamento.findOne({ where: { pedido: rep.pedido } })];
+                    case 2:
+                        pagRepository = _b.sent();
+                        if (!pagRepository) {
+                            throw new Error('Pagamento não encontrado');
+                        }
+                        return [2 /*return*/, this.converterRepository(pagRepository)];
+                }
+            });
+        });
+    };
+    ExecutarPagamentoUseCase.prototype.consultaPedidoIntegrador = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var repPagamento, pagRepository;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        repPagamento = data_source_1.AppDataSource.getRepository(Pagamento_1.PagamentoRepository);
+                        return [4 /*yield*/, repPagamento.findOne({ where: { identificador_pedido: id } })];
+                    case 1:
+                        pagRepository = _a.sent();
+                        if (!pagRepository) {
+                            throw new Error('Pedido integrador não encontrado');
+                        }
+                        return [2 /*return*/, this.converterRepository(pagRepository)];
                 }
             });
         });

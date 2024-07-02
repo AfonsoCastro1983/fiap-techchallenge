@@ -1,4 +1,4 @@
-import { Categoria } from "../../../shared/enums/Categoria";
+import { Categoria } from "../../shared/enums/Categoria";
 
 export class CadastrarItemDto {
     id?: number;

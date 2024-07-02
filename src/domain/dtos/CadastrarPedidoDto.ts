@@ -1,4 +1,4 @@
-import { StatusPedido } from "../../../shared/enums/StatusPedido";
+import { StatusPedido } from "../../shared/enums/StatusPedido";
 
 export class CadastrarPedidoDto {
     id?: number;

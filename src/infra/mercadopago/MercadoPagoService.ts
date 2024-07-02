@@ -1,8 +1,48 @@
 import { IPedido } from "../../application/interfaces/pedido/IPedido";
 import { IQRCodePagamento } from "../../application/interfaces/pagamento/IQRCodePagamento";
+import { IWebhookResposta } from "../../application/interfaces/pagamento/IWebhookResposta";
 import { IIntegradorPagamentoGateway } from "../../application/interfaces/pagamento/IIntegradorPagamento";
 import axios from 'axios';
 import { Categoria } from "../../shared/enums/Categoria";
+
+interface ITransacaoMercadoPago {
+    id: string;
+    status: string;
+    external_reference: string;
+    preference_id: string;
+    payments: {
+        id: string;
+        transaction_amount: number;
+        total_paid_amount: number;
+        shipping_cost: number;
+        currency_id: string;
+        status: string;
+        status_detail: string;
+        date_approved: string;
+        date_created: string;
+        last_modified: string;
+        amount_refunded: number;
+    }[];
+    payouts: {};
+    collector: {
+        id: number;
+        email: string;
+        nickname: string;
+    };
+    marketplace: string;
+    date_created: string;
+    last_updated: string;
+    shipping_cost: number;
+    total_amount: number;
+    site_id: string;
+    paid_amount: number;
+    refunded_amount: number;
+    payer: {
+        id: number;
+    };
+    cancelled: boolean;
+    order_status: string;
+}
 
 export class MercadoPagoService implements IIntegradorPagamentoGateway {
     private _UserID = 1869980712;
@@ -58,5 +98,14 @@ export class MercadoPagoService implements IIntegradorPagamentoGateway {
         })
 
         return resposta
+    }
+
+    public async tratarRetorno(body: string): Promise<IWebhookResposta> {
+        const transacao: ITransacaoMercadoPago = JSON.parse(body);
+        return {
+            id_pagamento: transacao.id,
+            status: transacao.status,
+            pago: transacao.order_status == "paid"
+        }
     }
 }

@@ -3,7 +3,7 @@ import { ItemRepository } from "../../../infra/database/repositories/Item";
 import { Item } from "../../../domain/entities/Item";
 import { Categoria } from "../../../shared/enums/Categoria";
 import { Preco } from "../../../shared/valueobjects/Preco";
-import { CadastrarItemDto } from "./CadastrarItemDto";
+import { CadastrarItemDto } from "../../../domain/dtos/CadastrarItemDto";
 
 export class CadastrarItemUseCase {
     async execute(dto: CadastrarItemDto): Promise<Item> {

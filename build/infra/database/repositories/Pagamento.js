@@ -37,11 +37,11 @@ var PagamentoRepository = /** @class */ (function () {
         __metadata("design:type", Pedido_1.PedidoRepository)
     ], PagamentoRepository.prototype, "pedido", void 0);
     __decorate([
-        (0, typeorm_1.Column)({ type: 'string' }),
+        (0, typeorm_1.Column)(),
         __metadata("design:type", String)
     ], PagamentoRepository.prototype, "identificador_pedido", void 0);
     __decorate([
-        (0, typeorm_1.Column)({ type: 'string' }),
+        (0, typeorm_1.Column)(),
         __metadata("design:type", String)
     ], PagamentoRepository.prototype, "qrcode", void 0);
     PagamentoRepository = __decorate([

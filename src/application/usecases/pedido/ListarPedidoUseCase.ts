@@ -8,6 +8,7 @@ import { CPF } from "../../../shared/valueobjects/CPF";
 import { IPedido } from "../../interfaces/pedido/IPedido";
 import { Item } from "../../../domain/entities/Item";
 import { Preco } from "../../../shared/valueobjects/Preco";
+import { In } from "typeorm";
 
 export class ListarPedidosUseCase {
 
@@ -45,6 +46,19 @@ export class ListarPedidosUseCase {
 
         if (statusValido) {
             const repPedidos = await repPedido.find({ where: { status: statusValido }, relations: ['cliente', 'pedidoItems'], order: { data: 'ASC' } });
+            return this.converteArrayPedidos(repPedidos);
+        }
+        else {
+            throw new Error('Status inválido')
+        }
+    }
+
+    async buscaPorStatusModulo2(): Promise<Array<IPedido>> {
+        const repPedido = AppDataSource.getRepository(PedidoRepository);
+        const statusValido = [StatusPedido.PRONTO_PARA_ENTREGA,StatusPedido.EM_PREPARACAO,StatusPedido.ENVIADO_PARA_A_COZINHA];
+
+        if (statusValido) {
+            const repPedidos = await repPedido.find({ where: { status: In(statusValido) }, relations: ['cliente', 'pedidoItems'], order: { status: 'DESC', data: 'ASC' } });
             return this.converteArrayPedidos(repPedidos);
         }
         else {

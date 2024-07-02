@@ -3,14 +3,16 @@ import { StatusPagamento } from "../../shared/enums/StatusPagamento";
 
 export class Pagamento {
   private _id: number;
+  private _pedido: number;
   private _valor: Preco;
   private _status: StatusPagamento;
   private _dataCriacao: Date;
   private _identificador_pedido: string;
   private _qrCodeCodigo: string;
 
-  constructor(id: number, valor: Preco) {
+  constructor(id: number, pedido: number,valor: Preco) {
     this._id = id;
+    this._pedido = pedido;
     this._valor = valor;
     this._status = StatusPagamento.AGUARDANDO_RESPOSTA;
     this._dataCriacao = new Date();
@@ -36,6 +38,10 @@ export class Pagamento {
 
   get dataCriacao(): Date {
     return this._dataCriacao;
+  }
+
+  get pedido(): number {
+    return this._pedido;
   }
 
   set identificadorPedido(value: string) {

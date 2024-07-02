@@ -97,7 +97,7 @@ var PedidoController = /** @class */ (function () {
         });
     };
     /**
-     * Busca pedidos por um status
+     * Busca pedidos por um status específico
      * @param status status do pedido
      * @returns
      * Lista de pedidos encontrados
@@ -110,6 +110,27 @@ var PedidoController = /** @class */ (function () {
                     case 0:
                         listaPedidos = new ListarPedidoUseCase_1.ListarPedidosUseCase();
                         return [4 /*yield*/, listaPedidos.buscaPorStatus(status)];
+                    case 1:
+                        pedidos = _a.sent();
+                        pedidosResponse = this.formataResposta(pedidos);
+                        return [2 /*return*/, { pedidos: pedidosResponse }];
+                }
+            });
+        });
+    };
+    /**
+     * Busca pedidos pelos status descritos no módulo 2 (Pronto (PRONTO_PARA_ENTREGA) > Em Preparação (EM_PREPARACAO) > Recebido (ENVIADO_PARA_A_COZINHA))
+     * @returns
+     * Lista de pedidos encontrados
+     */
+    PedidoController.prototype.buscaPorStatusModulo2 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var listaPedidos, pedidos, pedidosResponse;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        listaPedidos = new ListarPedidoUseCase_1.ListarPedidosUseCase();
+                        return [4 /*yield*/, listaPedidos.buscaPorStatusModulo2()];
                     case 1:
                         pedidos = _a.sent();
                         pedidosResponse = this.formataResposta(pedidos);
@@ -186,6 +207,12 @@ var PedidoController = /** @class */ (function () {
         __metadata("design:paramtypes", [String]),
         __metadata("design:returntype", Promise)
     ], PedidoController.prototype, "buscaPorStatus", null);
+    __decorate([
+        (0, tsoa_1.Get)("/status/"),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", Promise)
+    ], PedidoController.prototype, "buscaPorStatusModulo2", null);
     __decorate([
         (0, tsoa_1.Post)("/"),
         __param(0, (0, tsoa_1.Body)()),
