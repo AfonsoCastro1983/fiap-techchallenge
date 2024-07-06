@@ -42,32 +42,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MercadoPagoService = void 0;
 var axios_1 = __importDefault(require("axios"));
 var MercadoPagoService = /** @class */ (function () {
-    function MercadoPagoService() {
+    function MercadoPagoService(requisicao, path_webhook) {
         this._UserID = 1869980712;
         this._ExternalPOSID = 'LANCHONETECAIXA01';
         this._HeadersPadrao = {
             'Content-type': 'application/json',
-            'Authorization': 'APP_USR-6715474558730028-062805-771a3ab307055374f172539d3eb50052-1869980712'
+            'Authorization': 'Bearer APP_USR-6715474558730028-062805-771a3ab307055374f172539d3eb50052-1869980712'
         };
         this._TempoPagamento = 2; //em minutos
-        this._URLCallback = "URL CALLBACK";
+        this._URLCallback = "";
+        var protocolo = requisicao.headers['x-forwarded-proto'] || requisicao.protocol;
+        var host = requisicao.headers['host'];
+        this._URLCallback = protocolo + "://" + host + "/" + path_webhook;
+        console.log(this._URLCallback);
     }
     MercadoPagoService.prototype.geracaoPayload = function (pedido, descricao) {
         var expiracao = new Date();
         expiracao.setMinutes(expiracao.getMinutes() + this._TempoPagamento);
+        expiracao.setHours(expiracao.getHours() - 3);
+        console.log('expiração:', expiracao);
         var payload = {
             cash_out: { amount: 0 },
             description: descricao,
             external_reference: "Pedido:" + pedido.id.toString().padStart(10, '0'),
-            expiration_date: expiracao.toLocaleString().replace(/Z$/, ''),
+            expiration_date: expiracao.toISOString().replace(/Z$/, '-03:00'),
             items: pedido.itens === undefined ? [] : pedido.itens.map(function (item) { return ({
                 sku_number: item.item.id.toString(),
                 category: item.item.categoria.toUpperCase(),
                 title: item.item.nome,
                 description: item.item.descricao,
-                unit_price: item.item.preco,
-                quantity: item.quantidade,
-                total_amount: item.total
+                unit_price: Number(item.item.preco.valor),
+                unit_measure: "UNIDADE",
+                quantity: item.quantidade.valor,
+                total_amount: item.total.valor
             }); }),
             notification_url: this._URLCallback,
             title: "Lanchonete TechChallenge",
@@ -80,19 +87,20 @@ var MercadoPagoService = /** @class */ (function () {
             var payload, url, resposta, headers;
             return __generator(this, function (_a) {
                 payload = this.geracaoPayload(pedido, descricao);
-                url = 'https://api.mercadopago.com/instore/orders/qr/seller/collectors/${this._UserID}/pos/${this._ExternalPOSID}/qrs';
-                console.log(payload);
+                url = 'https://api.mercadopago.com/instore/orders/qr/seller/collectors/' + this._UserID + '/pos/' + this._ExternalPOSID + '/qrs';
                 resposta = {
                     identificador_pedido: '',
                     qrcode: ''
                 };
                 headers = this._HeadersPadrao;
                 axios_1.default.post(url, payload, { headers: headers }).then(function (response) {
-                    resposta.identificador_pedido = response.data.in_store_order_id,
-                        resposta.qrcode = response.data.qr_data;
+                    console.log('response:', response);
+                    resposta.identificador_pedido = response.data.in_store_order_id;
+                    resposta.qrcode = response.data.qr_data;
                 }).catch(function (error) {
                     throw new Error('Erro ao gerar QR-Code:' + error);
                 });
+                console.log(resposta);
                 return [2 /*return*/, resposta];
             });
         });
@@ -101,6 +109,7 @@ var MercadoPagoService = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var transacao;
             return __generator(this, function (_a) {
+                console.log(body);
                 transacao = JSON.parse(body);
                 return [2 /*return*/, {
                         id_pagamento: transacao.id,

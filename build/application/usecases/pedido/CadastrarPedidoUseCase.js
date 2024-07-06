@@ -88,7 +88,7 @@ var CadastrarPedidoUseCase = /** @class */ (function () {
                     case 2:
                         itens = _a.sent();
                         itens.forEach(function (element) {
-                            pedido.adicionarItem(element.item, element.quantidade.value);
+                            pedido.adicionarItem(element.item, element.quantidade.valor);
                         });
                         console.log(pedido);
                         _a.label = 3;
@@ -136,7 +136,7 @@ var CadastrarPedidoUseCase = /** @class */ (function () {
                         });
                         //Ajusta quantidades e valores dos itens escolhidos
                         itens_1.forEach(function (element) {
-                            pedido.adicionarItem(element.item, element.quantidade.value);
+                            pedido.adicionarItem(element.item, element.quantidade.valor);
                         });
                         _a.label = 8;
                     case 8:
@@ -178,7 +178,7 @@ var CadastrarPedidoUseCase = /** @class */ (function () {
                             repPedItem.item.nome = element.item.nome;
                             repPedItem.item.preco = element.item.preco.valor;
                             repPedItem.preco = element.item.preco.valor;
-                            repPedItem.quantidade = element.quantidade.value;
+                            repPedItem.quantidade = element.quantidade.valor;
                             rep.pedidoItems.push(repPedItem);
                         });
                         console.log(rep.pedidoItems);

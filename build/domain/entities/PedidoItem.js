@@ -24,7 +24,7 @@ var PedidoItem = /** @class */ (function () {
     });
     Object.defineProperty(PedidoItem.prototype, "total", {
         get: function () {
-            return new Preco_1.Preco(this._item.preco.valor * this._quantidade.value);
+            return new Preco_1.Preco(this._item.preco.valor * this._quantidade.valor);
         },
         enumerable: false,
         configurable: true

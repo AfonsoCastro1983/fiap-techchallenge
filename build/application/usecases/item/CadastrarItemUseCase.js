@@ -40,7 +40,6 @@ exports.CadastrarItemUseCase = void 0;
 var data_source_1 = require("../../../infra/database/data-source");
 var Item_1 = require("../../../infra/database/repositories/Item");
 var Item_2 = require("../../../domain/entities/Item");
-var Categoria_1 = require("../../../shared/enums/Categoria");
 var Preco_1 = require("../../../shared/valueobjects/Preco");
 var CadastrarItemUseCase = /** @class */ (function () {
     function CadastrarItemUseCase() {
@@ -88,12 +87,10 @@ var CadastrarItemUseCase = /** @class */ (function () {
                         return [4 /*yield*/, repItem.findOneBy({ id: id })];
                     case 1:
                         pesq = _a.sent();
-                        if (pesq) {
-                            item = new Item_2.Item(pesq.id, pesq.nome, pesq.descricao, new Preco_1.Preco(pesq.preco), pesq.ingredientes, pesq.categoria);
+                        if (!pesq) {
+                            throw new Error('Item não existe');
                         }
-                        else {
-                            item = new Item_2.Item(0, "", "", new Preco_1.Preco(0), "", Categoria_1.Categoria.LANCHE);
-                        }
+                        item = new Item_2.Item(pesq.id, pesq.nome, pesq.descricao, new Preco_1.Preco(pesq.preco), pesq.ingredientes, pesq.categoria);
                         return [2 /*return*/, item];
                 }
             });

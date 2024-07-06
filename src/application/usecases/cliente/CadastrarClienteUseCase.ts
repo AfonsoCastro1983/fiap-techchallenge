@@ -62,7 +62,7 @@ export class CadastrarClienteUseCase {
         }
     }
 
-    private gerarClientePorRepositorio(repCliente: ClienteRepository): Cliente {
+    public gerarClientePorRepositorio(repCliente: ClienteRepository): Cliente {
         let emailObj: Email | undefined;
         if (repCliente.email != "") {
             emailObj = new Email(repCliente.email);

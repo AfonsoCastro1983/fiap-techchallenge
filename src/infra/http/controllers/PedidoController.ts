@@ -18,7 +18,7 @@ interface PedidoResponse {
     status: string;
     cliente?: number;
     total: number;
-    pedidoItems: { itemId: number, preco: number; quantidade: number }[];
+    pedidoItems: { itemId: number, nome: string, preco: number; quantidade: number }[];
 }
 
 interface Pedidos {
@@ -39,8 +39,6 @@ export default class PedidoController {
             throw new Error("Pedido não encontrado");
         }
 
-        console.log(pedidos);
-
         const pedidosResponse: PedidoResponse[] = pedidos.map(pedido => ({
             id: pedido.id,
             data: pedido.data,
@@ -49,8 +47,9 @@ export default class PedidoController {
             total: pedido.valorTotal.valor,
             pedidoItems: pedido.itens === undefined ? [] : pedido.itens.map(item => ({
                 itemId: item.item.id,
+                nome: item.item.nome,
                 preco: item.item.preco.valor,
-                quantidade: item.quantidade.value
+                quantidade: item.quantidade.valor
             }))
         }));
         return pedidosResponse;
@@ -66,7 +65,11 @@ export default class PedidoController {
         const listaPedidos = new ListarPedidosUseCase();
         const pedidos = await listaPedidos.buscaPorID(id);
 
+        console.log('BuscaPorId',pedidos);
+
         const pedidosResponse: PedidoResponse[] = this.formataResposta(pedidos);
+
+        console.log('BuscaPorIdSaida',pedidosResponse);
 
         return { pedidos: pedidosResponse };
     }
@@ -76,7 +79,7 @@ export default class PedidoController {
      * @returns 
      * Lista de pedidos encontrados
      */
-    @Get("/status/:status")
+    @Get("listagem/:status")
     public async buscaPorStatus(@Path() status: string): Promise<Pedidos> {
         const listaPedidos = new ListarPedidosUseCase();
         const pedidos = await listaPedidos.buscaPorStatus(status);
@@ -122,8 +125,9 @@ export default class PedidoController {
             total: pedido.valorTotal.valor,
             pedidoItems: pedido.itens.map(item => ({
                 itemId: item.item.id,
+                nome: item.item.nome,
                 preco: item.item.preco.valor,
-                quantidade: item.quantidade.value
+                quantidade: item.quantidade.valor
             }))
         };
 

@@ -34,13 +34,12 @@ export class CadastrarItemUseCase {
         const repItem = AppDataSource.getRepository(ItemRepository);
         const pesq = await repItem.findOneBy({ id: id });
         let item : Item;
-        if (pesq) {
-            item = new Item(pesq.id, pesq.nome, pesq.descricao, new Preco(pesq.preco), pesq.ingredientes, pesq.categoria);
+        if (!pesq) {
+            throw new Error('Item não existe');            
         }
-        else {
-            item = new Item(0, "", "", new Preco(0), "", Categoria.LANCHE);
-        }
+        item = new Item(pesq.id, pesq.nome, pesq.descricao, new Preco(pesq.preco), pesq.ingredientes, pesq.categoria);
         return item;
+        
     }
 
     async delete(index: number): Promise<boolean> {

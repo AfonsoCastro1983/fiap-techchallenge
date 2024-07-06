@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Quantidade = void 0;
 var Quantidade = /** @class */ (function () {
     function Quantidade(value) {
-        this._value = 1;
+        this._valor = 1;
         this.alterarQuantidade(value);
     }
-    Object.defineProperty(Quantidade.prototype, "value", {
+    Object.defineProperty(Quantidade.prototype, "valor", {
         get: function () {
-            return this._value;
+            return this._valor;
         },
         enumerable: false,
         configurable: true
@@ -17,7 +17,7 @@ var Quantidade = /** @class */ (function () {
         if (value <= 0) {
             throw new Error('Quantidade não pode ser menor ou igual a zero');
         }
-        this._value = value;
+        this._valor = value;
     };
     return Quantidade;
 }());

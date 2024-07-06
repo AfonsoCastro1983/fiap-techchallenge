@@ -1,7 +1,9 @@
 import { Preco } from "../../shared/valueobjects/Preco";
 import { StatusPagamento } from "../../shared/enums/StatusPagamento";
+import { IPagamento } from "../../application/interfaces/pagamento/IPagamento";
 
-export class Pagamento {
+
+export class Pagamento implements IPagamento {
   private _id: number;
   private _pedido: number;
   private _valor: Preco;

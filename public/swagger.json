@@ -239,6 +239,9 @@
 									"type": "number",
 									"format": "double"
 								},
+								"nome": {
+									"type": "string"
+								},
 								"itemId": {
 									"type": "number",
 									"format": "double"
@@ -247,6 +250,7 @@
 							"required": [
 								"quantidade",
 								"preco",
+								"nome",
 								"itemId"
 							],
 							"type": "object"
@@ -670,7 +674,7 @@
 				]
 			}
 		},
-		"/pedido/status/{status}": {
+		"/pedido/listagem/{status}": {
 			"get": {
 				"operationId": "BuscaPorStatus",
 				"responses": {

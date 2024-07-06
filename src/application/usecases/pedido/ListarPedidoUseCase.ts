@@ -1,42 +1,47 @@
 import { AppDataSource } from "../../../infra/database/data-source";
-import { PedidoRepository } from "../../../infra/database/repositories/Pedido";
+import { PedidoItemRepository, PedidoRepository } from "../../../infra/database/repositories/Pedido";
 import { StatusPedido } from "../../../shared/enums/StatusPedido";
 import { Pedido } from "../../../domain/entities/Pedido";
-import { Cliente } from "../../../domain/entities/Cliente";
-import { Email } from "../../../shared/valueobjects/Email";
-import { CPF } from "../../../shared/valueobjects/CPF";
+import { CadastrarClienteUseCase } from "../cliente/CadastrarClienteUseCase";
 import { IPedido } from "../../interfaces/pedido/IPedido";
+import { In } from "typeorm";
 import { Item } from "../../../domain/entities/Item";
 import { Preco } from "../../../shared/valueobjects/Preco";
-import { In } from "typeorm";
 
 export class ListarPedidosUseCase {
 
-    private converteRepositoryEmPedido(repository: PedidoRepository): Pedido {
+    private async converteRepositoryEmPedido(repository: PedidoRepository): Promise<IPedido> {
         const pedido = new Pedido();
         if (repository.cliente) {
-            pedido.cliente = new Cliente(repository.cliente.id, repository.cliente.nome,new Email(repository.cliente.email),new CPF(repository.cliente.cpf))
+            pedido.cliente = new CadastrarClienteUseCase().gerarClientePorRepositorio(repository.cliente);
         }
         pedido.data = repository.data;
         pedido.id = repository.id;
         pedido.atualizarStatus(repository.status);
-        repository.pedidoItems.forEach(item => {
-            pedido.adicionarItem(new Item(item.item.id,item.item.nome,item.item.descricao,new Preco(item.preco),item.item.ingredientes,item.item.categoria),item.quantidade);
+
+        
+        const repPedidoItem = await AppDataSource.getRepository(PedidoItemRepository).find({where: {pedido: repository}, relations: ["item"]});
+        repPedidoItem.forEach(element => {
+            pedido.adicionarItem(new Item(element.item.id, element.item.nome, element.item.descricao, new Preco(element.preco), element.item.ingredientes,element.item.categoria),element.quantidade);
         });
+
         return pedido;
     }
 
     async buscaPorID(index: number): Promise<Array<IPedido>> {
         const repPedido = AppDataSource.getRepository(PedidoRepository);
-        const repPedidos = await repPedido.find({ where: { id: index }, relations: ['cliente', 'pedidoItems'], order: { data: 'ASC' } });
+        console.log("Id", index);
+        const repPedidos = await repPedido.find({ where: { id: index }, relations: ["cliente","pedidoItems"], order: { data: 'ASC' } });
+        console.log("buscaPorId", repPedido);
         return this.converteArrayPedidos(repPedidos);
     }
 
-    private converteArrayPedidos(repPedidos: PedidoRepository[]) {
+    async converteArrayPedidos(repPedidos: PedidoRepository[]): Promise<IPedido[]> {
         const pedidos: IPedido[] = [];
-        repPedidos.forEach(pedido => {
-            pedidos.push(this.converteRepositoryEmPedido(pedido));
-        });
+        for (const element of repPedidos) {
+            const pedido = await this.converteRepositoryEmPedido(element);
+            pedidos.push(pedido);
+        }
         return pedidos;
     }
 
@@ -55,7 +60,7 @@ export class ListarPedidosUseCase {
 
     async buscaPorStatusModulo2(): Promise<Array<IPedido>> {
         const repPedido = AppDataSource.getRepository(PedidoRepository);
-        const statusValido = [StatusPedido.PRONTO_PARA_ENTREGA,StatusPedido.EM_PREPARACAO,StatusPedido.ENVIADO_PARA_A_COZINHA];
+        const statusValido = [StatusPedido.PRONTO_PARA_ENTREGA, StatusPedido.EM_PREPARACAO, StatusPedido.ENVIADO_PARA_A_COZINHA];
 
         if (statusValido) {
             const repPedidos = await repPedido.find({ where: { status: In(statusValido) }, relations: ['cliente', 'pedidoItems'], order: { status: 'DESC', data: 'ASC' } });

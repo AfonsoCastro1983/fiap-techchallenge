@@ -20,25 +20,34 @@ var CPF = /** @class */ (function () {
     };
     CPF.prototype.isValidCPF = function (cpf) {
         cpf = cpf.replace(/[^0-9]/g, ''); // Remove caracteres não numéricos
-        if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) { // CPF inválido
+        if (cpf.length !== 11) { // CPF deve ter 11 dígitos
+            return false;
+        }
+        // Verifica se todos os dígitos são iguais
+        if (/^(\d)\1+$/.test(cpf)) {
             return false;
         }
         var sum = 0;
-        for (var i = 0; i < 9; i++) {
-            sum += parseInt(cpf.charAt(i)) * (10 - i);
+        var remainder;
+        // Calcula o primeiro dígito verificador
+        for (var i = 1; i <= 9; i++) {
+            sum += parseInt(cpf.charAt(i - 1)) * (11 - i);
         }
-        var remainder = (sum % 11) % 10;
-        if (remainder !== parseInt(cpf.charAt(9))) {
+        remainder = (sum * 10) % 11;
+        if (remainder === 10 || remainder === 11)
+            remainder = 0;
+        if (remainder !== parseInt(cpf.charAt(9)))
             return false;
-        }
         sum = 0;
-        for (var i = 0; i < 10; i++) {
-            sum += parseInt(cpf.charAt(i)) * (11 - i);
+        // Calcula o segundo dígito verificador
+        for (var i = 1; i <= 10; i++) {
+            sum += parseInt(cpf.charAt(i - 1)) * (12 - i);
         }
-        remainder = (sum % 11) % 10;
-        if (remainder !== parseInt(cpf.charAt(10))) {
+        remainder = (sum * 10) % 11;
+        if (remainder === 10 || remainder === 11)
+            remainder = 0;
+        if (remainder !== parseInt(cpf.charAt(10)))
             return false;
-        }
         return true;
     };
     return CPF;

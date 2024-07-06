@@ -21,7 +21,7 @@ export class PedidoItem implements IPedidoItem{
     }
 
     get total(): Preco {
-        return new Preco(this._item.preco.valor * this._quantidade.value);
+        return new Preco(this._item.preco.valor * this._quantidade.valor);
     }
 
     alterarQuantidade(quantidade: number) {

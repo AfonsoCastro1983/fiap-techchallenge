@@ -130,7 +130,7 @@ router.get("/item/:categoria", async (req, res) => {
 ////Iniciar pagamento
 router.post("/pagamento/iniciar", async (req, res) => {
     try {
-        const controller = new PagamentoController(new ExecutarPagamentoUseCase(), new MercadoPagoService());
+        const controller = new PagamentoController(new ExecutarPagamentoUseCase(), new MercadoPagoService(req,'pagamento/webhook'));
         const resposta = await controller.iniciarPagamento(req.body);
 
         return res.status(200).json(resposta);
@@ -145,7 +145,7 @@ router.post("/pagamento/iniciar", async (req, res) => {
 ////Confirmar pagamento
 router.post("/pagamento/confirmar", async (req, res) => {
     try {
-        const controller = new PagamentoController(new ExecutarPagamentoUseCase(), new MercadoPagoService());
+        const controller = new PagamentoController(new ExecutarPagamentoUseCase(), new MercadoPagoService(req,'pagamento/webhook'));
         const resposta = await controller.confirmarPagamento(req.body);
 
         return res.status(200).json(resposta);
@@ -160,7 +160,7 @@ router.post("/pagamento/confirmar", async (req, res) => {
 ////Cancelar pagamento
 router.post("/pagamento/cancelar", async (req, res) => {
     try {
-        const controller = new PagamentoController(new ExecutarPagamentoUseCase(), new MercadoPagoService());
+        const controller = new PagamentoController(new ExecutarPagamentoUseCase(), new MercadoPagoService(req,'pagamento/webhook'));
         const resposta = await controller.cancelarPagamento(req.body);
 
         return res.status(200).json(resposta);
@@ -175,7 +175,10 @@ router.post("/pagamento/cancelar", async (req, res) => {
 ////Webhook de atualização de status de pagamento
 router.post("/pagamento/webhook", async (req, res) => {
     try {
-
+        console.log(req.body);
+        const mp = new MercadoPagoService(req,'pagamento/webhook');
+        const resposta = mp.tratarRetorno(req.body);
+        return res.status(200).json(resposta);
     }
     catch (error) {
         if (error instanceof Error) {
@@ -189,7 +192,7 @@ router.post("/pagamento/webhook", async (req, res) => {
 ////2ªFase - Entregáveis 1 - a.ii
 router.get("/pagamento/status/:pedido", async (req, res) => {
     try {
-        const controller = new PagamentoController(new ExecutarPagamentoUseCase(), new MercadoPagoService());
+        const controller = new PagamentoController(new ExecutarPagamentoUseCase(), new MercadoPagoService(req,'pagamento/webhook'));
         const resposta = await controller.buscarStatusPedido(Number(req.params.pedido));
 
         return res.status(200).json(resposta);
@@ -231,9 +234,10 @@ router.put("/pedido/status", async (req, res) => {
     }
 })
 ///1ªFase - Entregáveis 2 - vi. Listar pedidos
-router.get("/pedido/:status", async (req, res) => {
+router.get("/pedido/listagem/:status", async (req, res) => {
     try {
         const controller = new PedidoController(new CadastrarPedidoUseCase());
+        console.log("status",req.params.status);
         const resposta = await controller.buscaPorStatus(req.params.status);
 
         if (resposta) {
@@ -254,7 +258,7 @@ router.get("/pedido/:status", async (req, res) => {
 ////1. Pronto (PRONTO_PARA_ENTREGA) > Em Preparação (EM_PREPARACAO) > Recebido (ENVIADO_PARA_A_COZINHA)
 ////2. Pedidos mais antigos primeiro e mais novos depois
 ////3. Pedidos com status Finalizado (ENTREGUE) não devem aparecer na lista
-router.get("/pedido/status", async (req, res) => {
+router.get("/pedido/status/", async (req, res) => {
     try {
         const controller = new PedidoController(new CadastrarPedidoUseCase());
         const resposta = await controller.buscaPorStatusModulo2();
@@ -274,7 +278,7 @@ router.get("/pedido/status", async (req, res) => {
 });
 
 ///Buscar pedido
-router.get("/pedido/:id", async (req, res) => {
+router.get("/pedido/id/:id", async (req, res) => {
     try {
         const controller = new PedidoController(new CadastrarPedidoUseCase());
         const resposta = await controller.buscaPorId(Number(req.params.id));

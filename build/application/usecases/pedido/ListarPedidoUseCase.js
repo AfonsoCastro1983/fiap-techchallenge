@@ -41,27 +41,36 @@ var data_source_1 = require("../../../infra/database/data-source");
 var Pedido_1 = require("../../../infra/database/repositories/Pedido");
 var StatusPedido_1 = require("../../../shared/enums/StatusPedido");
 var Pedido_2 = require("../../../domain/entities/Pedido");
-var Cliente_1 = require("../../../domain/entities/Cliente");
-var Email_1 = require("../../../shared/valueobjects/Email");
-var CPF_1 = require("../../../shared/valueobjects/CPF");
+var CadastrarClienteUseCase_1 = require("../cliente/CadastrarClienteUseCase");
+var typeorm_1 = require("typeorm");
 var Item_1 = require("../../../domain/entities/Item");
 var Preco_1 = require("../../../shared/valueobjects/Preco");
-var typeorm_1 = require("typeorm");
 var ListarPedidosUseCase = /** @class */ (function () {
     function ListarPedidosUseCase() {
     }
     ListarPedidosUseCase.prototype.converteRepositoryEmPedido = function (repository) {
-        var pedido = new Pedido_2.Pedido();
-        if (repository.cliente) {
-            pedido.cliente = new Cliente_1.Cliente(repository.cliente.id, repository.cliente.nome, new Email_1.Email(repository.cliente.email), new CPF_1.CPF(repository.cliente.cpf));
-        }
-        pedido.data = repository.data;
-        pedido.id = repository.id;
-        pedido.atualizarStatus(repository.status);
-        repository.pedidoItems.forEach(function (item) {
-            pedido.adicionarItem(new Item_1.Item(item.item.id, item.item.nome, item.item.descricao, new Preco_1.Preco(item.preco), item.item.ingredientes, item.item.categoria), item.quantidade);
+        return __awaiter(this, void 0, void 0, function () {
+            var pedido, repPedidoItem;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        pedido = new Pedido_2.Pedido();
+                        if (repository.cliente) {
+                            pedido.cliente = new CadastrarClienteUseCase_1.CadastrarClienteUseCase().gerarClientePorRepositorio(repository.cliente);
+                        }
+                        pedido.data = repository.data;
+                        pedido.id = repository.id;
+                        pedido.atualizarStatus(repository.status);
+                        return [4 /*yield*/, data_source_1.AppDataSource.getRepository(Pedido_1.PedidoItemRepository).find({ where: { pedido: repository }, relations: ["item"] })];
+                    case 1:
+                        repPedidoItem = _a.sent();
+                        repPedidoItem.forEach(function (element) {
+                            pedido.adicionarItem(new Item_1.Item(element.item.id, element.item.nome, element.item.descricao, new Preco_1.Preco(element.preco), element.item.ingredientes, element.item.categoria), element.quantidade);
+                        });
+                        return [2 /*return*/, pedido];
+                }
+            });
         });
-        return pedido;
     };
     ListarPedidosUseCase.prototype.buscaPorID = function (index) {
         return __awaiter(this, void 0, void 0, function () {
@@ -70,21 +79,40 @@ var ListarPedidosUseCase = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         repPedido = data_source_1.AppDataSource.getRepository(Pedido_1.PedidoRepository);
-                        return [4 /*yield*/, repPedido.find({ where: { id: index }, relations: ['cliente', 'pedidoItems'], order: { data: 'ASC' } })];
+                        console.log("Id", index);
+                        return [4 /*yield*/, repPedido.find({ where: { id: index }, relations: ["cliente", "pedidoItems"], order: { data: 'ASC' } })];
                     case 1:
                         repPedidos = _a.sent();
+                        console.log("buscaPorId", repPedido);
                         return [2 /*return*/, this.converteArrayPedidos(repPedidos)];
                 }
             });
         });
     };
     ListarPedidosUseCase.prototype.converteArrayPedidos = function (repPedidos) {
-        var _this = this;
-        var pedidos = [];
-        repPedidos.forEach(function (pedido) {
-            pedidos.push(_this.converteRepositoryEmPedido(pedido));
+        return __awaiter(this, void 0, void 0, function () {
+            var pedidos, _i, repPedidos_1, element, pedido;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        pedidos = [];
+                        _i = 0, repPedidos_1 = repPedidos;
+                        _a.label = 1;
+                    case 1:
+                        if (!(_i < repPedidos_1.length)) return [3 /*break*/, 4];
+                        element = repPedidos_1[_i];
+                        return [4 /*yield*/, this.converteRepositoryEmPedido(element)];
+                    case 2:
+                        pedido = _a.sent();
+                        pedidos.push(pedido);
+                        _a.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/, pedidos];
+                }
+            });
         });
-        return pedidos;
     };
     ListarPedidosUseCase.prototype.buscaPorStatus = function (status) {
         return __awaiter(this, void 0, void 0, function () {

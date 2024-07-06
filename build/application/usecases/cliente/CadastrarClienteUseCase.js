@@ -60,20 +60,23 @@ var CadastrarClienteUseCase = /** @class */ (function () {
                         }
                         clienteRepository = new Cliente_2.ClienteRepository();
                         repCliente = data_source_1.AppDataSource.getRepository(Cliente_2.ClienteRepository);
-                        if (!cpf) return [3 /*break*/, 2];
+                        if (!(cpf && cpf != "")) return [3 /*break*/, 2];
+                        console.log('CPF', cpf);
                         return [4 /*yield*/, this.buscarPorCPF(cpf)];
                     case 1:
                         cliPesqCPF = _a.sent();
-                        if (cliPesqCPF) {
+                        if (cliPesqCPF && cliPesqCPF.id != 0) {
+                            console.log('CPF', cliPesqCPF);
                             return [2 /*return*/, cliPesqCPF];
                         }
-                        return [3 /*break*/, 4];
+                        _a.label = 2;
                     case 2:
                         if (!(email && email != "")) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.buscarPorEmail(email)];
                     case 3:
                         cliEmail = _a.sent();
-                        if (cliEmail) {
+                        if (cliEmail && cliEmail.id != 0) {
+                            console.log('CPF', cliEmail);
                             return [2 /*return*/, cliEmail];
                         }
                         _a.label = 4;
@@ -88,7 +91,7 @@ var CadastrarClienteUseCase = /** @class */ (function () {
                     case 5:
                         clienteRepository = _a.sent();
                         console.log(clienteRepository);
-                        cliente = new Cliente_1.Cliente(clienteRepository.id, clienteRepository.nome, emailObj, cpfObj);
+                        cliente = this.gerarClientePorRepositorio(clienteRepository);
                         return [2 /*return*/, cliente];
                 }
             });
@@ -114,7 +117,15 @@ var CadastrarClienteUseCase = /** @class */ (function () {
         });
     };
     CadastrarClienteUseCase.prototype.gerarClientePorRepositorio = function (repCliente) {
-        return new Cliente_1.Cliente(repCliente.id, repCliente.nome, new Email_1.Email(repCliente.email), new CPF_1.CPF(repCliente.cpf));
+        var emailObj;
+        if (repCliente.email != "") {
+            emailObj = new Email_1.Email(repCliente.email);
+        }
+        var cpfObj;
+        if (repCliente.cpf != "") {
+            cpfObj = new CPF_1.CPF(repCliente.cpf);
+        }
+        return new Cliente_1.Cliente(repCliente.id, repCliente.nome, emailObj, cpfObj);
     };
     CadastrarClienteUseCase.prototype.buscarPorEmail = function (email) {
         return __awaiter(this, void 0, void 0, function () {

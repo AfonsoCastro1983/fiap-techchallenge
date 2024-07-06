@@ -59,7 +59,6 @@ var PedidoController = /** @class */ (function () {
         if (!pedidos || pedidos.length === 0) {
             throw new Error("Pedido não encontrado");
         }
-        console.log(pedidos);
         var pedidosResponse = pedidos.map(function (pedido) { return ({
             id: pedido.id,
             data: pedido.data,
@@ -68,8 +67,9 @@ var PedidoController = /** @class */ (function () {
             total: pedido.valorTotal.valor,
             pedidoItems: pedido.itens === undefined ? [] : pedido.itens.map(function (item) { return ({
                 itemId: item.item.id,
+                nome: item.item.nome,
                 preco: item.item.preco.valor,
-                quantidade: item.quantidade.value
+                quantidade: item.quantidade.valor
             }); })
         }); });
         return pedidosResponse;
@@ -90,7 +90,9 @@ var PedidoController = /** @class */ (function () {
                         return [4 /*yield*/, listaPedidos.buscaPorID(id)];
                     case 1:
                         pedidos = _a.sent();
+                        console.log('BuscaPorId', pedidos);
                         pedidosResponse = this.formataResposta(pedidos);
+                        console.log('BuscaPorIdSaida', pedidosResponse);
                         return [2 /*return*/, { pedidos: pedidosResponse }];
                 }
             });
@@ -166,8 +168,9 @@ var PedidoController = /** @class */ (function () {
                             total: pedido.valorTotal.valor,
                             pedidoItems: pedido.itens.map(function (item) { return ({
                                 itemId: item.item.id,
+                                nome: item.item.nome,
                                 preco: item.item.preco.valor,
-                                quantidade: item.quantidade.value
+                                quantidade: item.quantidade.valor
                             }); })
                         };
                         return [2 /*return*/, pedidoResponse];
@@ -201,7 +204,7 @@ var PedidoController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], PedidoController.prototype, "buscaPorId", null);
     __decorate([
-        (0, tsoa_1.Get)("/status/:status"),
+        (0, tsoa_1.Get)("listagem/:status"),
         __param(0, (0, tsoa_1.Path)()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [String]),
