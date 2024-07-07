@@ -4,14 +4,14 @@ import { IWebhookResposta } from "../../application/interfaces/pagamento/IWebhoo
 import { IIntegradorPagamentoGateway } from "../../application/interfaces/pagamento/IIntegradorPagamento";
 import axios from 'axios';
 import { Categoria } from "../../shared/enums/Categoria";
-import { Request, response } from "express";
+import { Request } from "express";
 
 interface ITransacaoMercadoPago {
-    id: string;
+    id: number;
     status: string;
     external_reference: string;
     preference_id: string;
-    payments: {
+    payments?: {
         id: string;
         transaction_amount: number;
         total_paid_amount: number;
@@ -24,7 +24,6 @@ interface ITransacaoMercadoPago {
         last_modified: string;
         amount_refunded: number;
     }[];
-    payouts: {};
     collector: {
         id: number;
         email: string;
@@ -43,6 +42,11 @@ interface ITransacaoMercadoPago {
     };
     cancelled: boolean;
     order_status: string;
+}
+
+export interface IRetornoWebhookMercadoPago {
+    resource: string,
+    topic: string
 }
 
 export class MercadoPagoService implements IIntegradorPagamentoGateway {
@@ -102,7 +106,9 @@ export class MercadoPagoService implements IIntegradorPagamentoGateway {
         const headers = this._HeadersPadrao;
 
         try {
+            console.log('MP - payload=>', payload);
             const resposta_mp = await axios.post(url, payload, { headers });
+            console.log('MP - resposta =>', resposta_mp)
             resposta.identificador_pedido = resposta_mp.data.in_store_order_id;
             resposta.qrcode = resposta_mp.data.qr_data;
         }
@@ -113,14 +119,23 @@ export class MercadoPagoService implements IIntegradorPagamentoGateway {
         return resposta
     }
 
-    public async tratarRetorno(body: string): Promise<IWebhookResposta> {
-        console.log(body);
+    public async tratarRetorno(body: any): Promise<IWebhookResposta> {
+        const headers = this._HeadersPadrao;
         try {
-            const transacao: ITransacaoMercadoPago = JSON.parse(body);
-            return {
-                id_pagamento: transacao.id,
-                status: transacao.status,
-                pago: transacao.order_status == "paid"
+            const retorno_webhook: IRetornoWebhookMercadoPago = body;
+            console.log(retorno_webhook);
+            if (retorno_webhook.resource != "") {
+                const resposta_mp = await axios.get(retorno_webhook.resource, { headers });
+                const transacao: ITransacaoMercadoPago = resposta_mp.data;
+                console.log(transacao.id, transacao.status, transacao.order_status);
+                return {
+                    id_pagamento: transacao.id.toString(),
+                    status: transacao.status,
+                    pago: transacao.order_status == "paid"
+                }
+            }
+            else {
+                throw new Error('Retorno não mapeado');
             }
         }
         catch (erro) {

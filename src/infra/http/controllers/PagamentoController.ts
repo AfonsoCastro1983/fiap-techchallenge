@@ -85,7 +85,9 @@ export default class PagamentoController {
     public async receberStatusPagamentoIntegrador(@Body() payload: string): Promise<WebhookResponse> {
         try {
             const respostaIntegrador = await this.integradorPagamentos.tratarRetorno(payload);
-            if ((respostaIntegrador) && (respostaIntegrador.status == "closed")) {
+            console.log('respostaIntegrador ->', respostaIntegrador);
+            if (respostaIntegrador) {
+                if (respostaIntegrador.status == "closed") {
                 const pagto = await this.pagamentoUseCase.consultaPedidoIntegrador(respostaIntegrador.id_pagamento);
                 if (pagto) {
                     if (respostaIntegrador.pago) {
@@ -94,8 +96,9 @@ export default class PagamentoController {
                     else {
                         this.pagamentoUseCase.cancelar(pagto.pedido);
                     }
-                }
+                }}
             }
+
             return {
                 ok: true
             }

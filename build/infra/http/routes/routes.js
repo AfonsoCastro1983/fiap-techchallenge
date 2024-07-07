@@ -226,7 +226,7 @@ router.post("/pagamento/iniciar", function (req, res) { return __awaiter(void 0,
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService(req, 'webhook'));
+                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
                 return [4 /*yield*/, controller.iniciarPagamento(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -248,7 +248,7 @@ router.post("/pagamento/confirmar", function (req, res) { return __awaiter(void 
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService(req, 'webhook'));
+                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
                 return [4 /*yield*/, controller.confirmarPagamento(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -270,7 +270,7 @@ router.post("/pagamento/cancelar", function (req, res) { return __awaiter(void 0
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService(req, 'webhook'));
+                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
                 return [4 /*yield*/, controller.cancelarPagamento(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -290,7 +290,8 @@ router.post("/pagamento/webhook", function (req, res) { return __awaiter(void 0,
     var mp, resposta;
     return __generator(this, function (_a) {
         try {
-            mp = new MercadoPagoService_1.MercadoPagoService(req, 'weebhook');
+            console.log(req.body);
+            mp = new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook');
             resposta = mp.tratarRetorno(req.body);
             return [2 /*return*/, res.status(200).json(resposta)];
         }
@@ -310,7 +311,7 @@ router.get("/pagamento/status/:pedido", function (req, res) { return __awaiter(v
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService(req, 'webhook'));
+                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
                 return [4 /*yield*/, controller.buscarStatusPedido(Number(req.params.pedido))];
             case 1:
                 resposta = _a.sent();

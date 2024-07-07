@@ -113,6 +113,7 @@ var ExecutarPagamentoUseCase = /** @class */ (function () {
                         return [4 /*yield*/, integradorPagamentos.gerarQRCode(buscaPedido, "Pedido Lanchonete")];
                     case 3:
                         resposta = _a.sent();
+                        console.log(resposta);
                         if (!(resposta.identificador_pedido != "")) return [3 /*break*/, 5];
                         rep.identificador_pedido = resposta.identificador_pedido;
                         rep.qrcode = resposta.qrcode;
@@ -120,9 +121,13 @@ var ExecutarPagamentoUseCase = /** @class */ (function () {
                     case 4:
                         rep = _a.sent();
                         console.log('Pagamento atualizado com o qr-Code');
+                        pagamento.identificadorPedido = resposta.identificador_pedido;
+                        pagamento.qrCode = resposta.qrcode;
                         return [3 /*break*/, 6];
                     case 5:
                         mudarStatusPedido.atualizaPedido(pedido, "CANCELADO");
+                        pagamento.status = StatusPagamento_1.StatusPagamento.CANCELADO;
+                        this.cancelar(pagamento.pedido);
                         _a.label = 6;
                     case 6: return [2 /*return*/, pagamento];
                 }

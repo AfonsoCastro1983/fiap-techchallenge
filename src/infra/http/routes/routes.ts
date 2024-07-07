@@ -176,8 +176,9 @@ router.post("/pagamento/cancelar", async (req, res) => {
 router.post("/pagamento/webhook", async (req, res) => {
     try {
         console.log(req.body);
-        const mp = new MercadoPagoService(req,'pagamento/webhook');
-        const resposta = mp.tratarRetorno(req.body);
+        const controller = new PagamentoController(new ExecutarPagamentoUseCase(), new MercadoPagoService(req,'pagamento/webhook'));
+        const resposta = await controller.receberStatusPagamentoIntegrador(req.body);
+        console.log('respostaWebhook:',resposta);
         return res.status(200).json(resposta);
     }
     catch (error) {

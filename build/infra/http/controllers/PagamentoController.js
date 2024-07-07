@@ -151,6 +151,7 @@ var PagamentoController = /** @class */ (function () {
                         return [4 /*yield*/, this.integradorPagamentos.tratarRetorno(payload)];
                     case 1:
                         respostaIntegrador = _b.sent();
+                        console.log('respostaIntegrador ->', respostaIntegrador);
                         if (!((respostaIntegrador) && (respostaIntegrador.status == "closed"))) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.pagamentoUseCase.consultaPedidoIntegrador(respostaIntegrador.id_pagamento)];
                     case 2:

@@ -84,38 +84,71 @@ var MercadoPagoService = /** @class */ (function () {
     };
     MercadoPagoService.prototype.gerarQRCode = function (pedido, descricao) {
         return __awaiter(this, void 0, void 0, function () {
-            var payload, url, resposta, headers;
+            var payload, url, resposta, headers, resposta_mp, error_1;
             return __generator(this, function (_a) {
-                payload = this.geracaoPayload(pedido, descricao);
-                url = 'https://api.mercadopago.com/instore/orders/qr/seller/collectors/' + this._UserID + '/pos/' + this._ExternalPOSID + '/qrs';
-                resposta = {
-                    identificador_pedido: '',
-                    qrcode: ''
-                };
-                headers = this._HeadersPadrao;
-                axios_1.default.post(url, payload, { headers: headers }).then(function (response) {
-                    console.log('response:', response);
-                    resposta.identificador_pedido = response.data.in_store_order_id;
-                    resposta.qrcode = response.data.qr_data;
-                }).catch(function (error) {
-                    throw new Error('Erro ao gerar QR-Code:' + error);
-                });
-                console.log(resposta);
-                return [2 /*return*/, resposta];
+                switch (_a.label) {
+                    case 0:
+                        payload = this.geracaoPayload(pedido, descricao);
+                        url = 'https://api.mercadopago.com/instore/orders/qr/seller/collectors/' + this._UserID + '/pos/' + this._ExternalPOSID + '/qrs';
+                        resposta = {
+                            identificador_pedido: '',
+                            qrcode: ''
+                        };
+                        headers = this._HeadersPadrao;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        console.log('MP - payload=>', payload);
+                        return [4 /*yield*/, axios_1.default.post(url, payload, { headers: headers })];
+                    case 2:
+                        resposta_mp = _a.sent();
+                        console.log('MP - resposta =>', resposta_mp);
+                        resposta.identificador_pedido = resposta_mp.data.in_store_order_id;
+                        resposta.qrcode = resposta_mp.data.qr_data;
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_1 = _a.sent();
+                        throw new Error('Erro ao gerar QR-Code:' + error_1);
+                    case 4: return [2 /*return*/, resposta];
+                }
             });
         });
     };
     MercadoPagoService.prototype.tratarRetorno = function (body) {
         return __awaiter(this, void 0, void 0, function () {
-            var transacao;
+            var headers, retorno_webhook, resposta_mp, transacao, erro_1;
             return __generator(this, function (_a) {
-                console.log(body);
-                transacao = JSON.parse(body);
-                return [2 /*return*/, {
-                        id_pagamento: transacao.id,
-                        status: transacao.status,
-                        pago: transacao.order_status == "paid"
-                    }];
+                switch (_a.label) {
+                    case 0:
+                        headers = this._HeadersPadrao;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 5, , 6]);
+                        retorno_webhook = body;
+                        console.log(retorno_webhook);
+                        if (!(retorno_webhook.resource != "")) return [3 /*break*/, 3];
+                        return [4 /*yield*/, axios_1.default.get(retorno_webhook.resource, { headers: headers })];
+                    case 2:
+                        resposta_mp = _a.sent();
+                        console.log("resposta_mp ->", resposta_mp.data);
+                        transacao = resposta_mp.data;
+                        console.log('transacao -> ', transacao);
+                        return [2 /*return*/, {
+                                id_pagamento: transacao.id.toString(),
+                                status: transacao.status,
+                                pago: transacao.order_status == "paid"
+                            }];
+                    case 3: throw new Error('Retorno não mapeado');
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        erro_1 = _a.sent();
+                        return [2 /*return*/, {
+                                id_pagamento: "",
+                                status: "",
+                                pago: false
+                            }];
+                    case 6: return [2 /*return*/];
+                }
             });
         });
     };
