@@ -37,27 +37,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ListarItensUseCase = void 0;
-var data_source_1 = require("../../../infra/database/data-source");
-var Item_1 = require("../../../infra/database/repositories/Item");
 var Categoria_1 = require("../../../shared/enums/Categoria");
 var ListarItensUseCase = /** @class */ (function () {
-    function ListarItensUseCase() {
+    function ListarItensUseCase(itemGateway) {
+        this.ItemGateway = itemGateway;
     }
     ListarItensUseCase.prototype.listarPorCategoria = function (categoria) {
         return __awaiter(this, void 0, void 0, function () {
-            var repItem, categoriaValida, itens;
+            var categoriaValida, itens;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        repItem = data_source_1.AppDataSource.getRepository(Item_1.ItemRepository);
-                        categoriaValida = Categoria_1.Categoria[categoria];
-                        if (!categoriaValida) return [3 /*break*/, 2];
-                        return [4 /*yield*/, repItem.findBy({ categoria: categoriaValida })];
-                    case 1:
-                        itens = _a.sent();
-                        return [2 /*return*/, itens];
-                    case 2: throw new Error('Categoria Inválida');
+                categoriaValida = Categoria_1.Categoria[categoria];
+                if (categoriaValida) {
+                    itens = this.ItemGateway.listaPorCategoria(categoriaValida);
+                    return [2 /*return*/, itens];
                 }
+                else {
+                    throw new Error('Categoria Inválida');
+                }
+                return [2 /*return*/];
             });
         });
     };

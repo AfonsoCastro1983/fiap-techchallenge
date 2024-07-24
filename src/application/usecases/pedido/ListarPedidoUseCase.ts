@@ -2,18 +2,18 @@ import { AppDataSource } from "../../../infra/database/data-source";
 import { PedidoItemRepository, PedidoRepository } from "../../../infra/database/repositories/Pedido";
 import { StatusPedido } from "../../../shared/enums/StatusPedido";
 import { Pedido } from "../../../domain/entities/Pedido";
-import { CadastrarClienteUseCase } from "../cliente/CadastrarClienteUseCase";
 import { IPedido } from "../../interfaces/pedido/IPedido";
 import { In } from "typeorm";
 import { Item } from "../../../domain/entities/Item";
 import { Preco } from "../../../shared/valueobjects/Preco";
+import { ClienteGateway } from "../../../infra/database/gateways/ClienteGateway";
 
 export class ListarPedidosUseCase {
 
     private async converteRepositoryEmPedido(repository: PedidoRepository): Promise<IPedido> {
         const pedido = new Pedido();
         if (repository.cliente) {
-            pedido.cliente = new CadastrarClienteUseCase().gerarClientePorRepositorio(repository.cliente);
+            pedido.cliente = new ClienteGateway().gerarClientePorRepositorio(repository.cliente);
         }
         pedido.data = repository.data;
         pedido.id = repository.id;

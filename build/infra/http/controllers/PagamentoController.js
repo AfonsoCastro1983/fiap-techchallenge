@@ -152,7 +152,8 @@ var PagamentoController = /** @class */ (function () {
                     case 1:
                         respostaIntegrador = _b.sent();
                         console.log('respostaIntegrador ->', respostaIntegrador);
-                        if (!((respostaIntegrador) && (respostaIntegrador.status == "closed"))) return [3 /*break*/, 3];
+                        if (!respostaIntegrador) return [3 /*break*/, 3];
+                        if (!(respostaIntegrador.status == "closed")) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.pagamentoUseCase.consultaPedidoIntegrador(respostaIntegrador.id_pagamento)];
                     case 2:
                         pagto = _b.sent();

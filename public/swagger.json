@@ -149,54 +149,11 @@
 				"type": "object",
 				"additionalProperties": true
 			},
-			"Categoria": {
-				"enum": [
-					"Lanche",
-					"Bebida",
-					"Acompanhamento",
-					"Sobremesa"
-				],
-				"type": "string"
-			},
-			"ItemRepository": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"nome": {
-						"type": "string"
-					},
-					"descricao": {
-						"type": "string"
-					},
-					"preco": {
-						"type": "number",
-						"format": "double"
-					},
-					"ingredientes": {
-						"type": "string"
-					},
-					"categoria": {
-						"$ref": "#/components/schemas/Categoria"
-					}
-				},
-				"required": [
-					"id",
-					"nome",
-					"descricao",
-					"preco",
-					"ingredientes",
-					"categoria"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
 			"ItensArray": {
 				"properties": {
 					"itens": {
 						"items": {
-							"$ref": "#/components/schemas/ItemRepository"
+							"$ref": "#/components/schemas/ItemResponse"
 						},
 						"type": "array"
 					}

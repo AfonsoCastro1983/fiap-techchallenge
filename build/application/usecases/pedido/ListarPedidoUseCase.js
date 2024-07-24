@@ -41,10 +41,10 @@ var data_source_1 = require("../../../infra/database/data-source");
 var Pedido_1 = require("../../../infra/database/repositories/Pedido");
 var StatusPedido_1 = require("../../../shared/enums/StatusPedido");
 var Pedido_2 = require("../../../domain/entities/Pedido");
-var CadastrarClienteUseCase_1 = require("../cliente/CadastrarClienteUseCase");
 var typeorm_1 = require("typeorm");
 var Item_1 = require("../../../domain/entities/Item");
 var Preco_1 = require("../../../shared/valueobjects/Preco");
+var ClienteGateway_1 = require("../../../infra/database/gateways/ClienteGateway");
 var ListarPedidosUseCase = /** @class */ (function () {
     function ListarPedidosUseCase() {
     }
@@ -56,7 +56,7 @@ var ListarPedidosUseCase = /** @class */ (function () {
                     case 0:
                         pedido = new Pedido_2.Pedido();
                         if (repository.cliente) {
-                            pedido.cliente = new CadastrarClienteUseCase_1.CadastrarClienteUseCase().gerarClientePorRepositorio(repository.cliente);
+                            pedido.cliente = new ClienteGateway_1.ClienteGateway().gerarClientePorRepositorio(repository.cliente);
                         }
                         pedido.data = repository.data;
                         pedido.id = repository.id;

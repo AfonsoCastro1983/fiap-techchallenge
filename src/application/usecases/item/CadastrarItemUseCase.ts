@@ -1,61 +1,27 @@
-import { AppDataSource } from "../../../infra/database/data-source";
-import { ItemRepository } from "../../../infra/database/repositories/Item";
 import { Item } from "../../../domain/entities/Item";
-import { Categoria } from "../../../shared/enums/Categoria";
 import { Preco } from "../../../shared/valueobjects/Preco";
 import { CadastrarItemDto } from "../../../domain/dtos/CadastrarItemDto";
+import { IItemGateway } from "../../interfaces/item/IItemGateway";
+import { IItem } from "../../interfaces/item/IItem";
 
 export class CadastrarItemUseCase {
-    async execute(dto: CadastrarItemDto): Promise<Item> {
+    private itemGateway: IItemGateway;
+
+    constructor (itemGateway: IItemGateway) {
+        this.itemGateway = itemGateway;
+    }
+    async execute(dto: CadastrarItemDto): Promise<IItem> {
         const preco = new Preco(dto.preco);
+        const item = new Item(dto.id||0,dto.nome,dto.descricao,preco,dto.ingredientes,dto.categoria);
 
-        const repItem = AppDataSource.getRepository(ItemRepository);
-        let rep = new ItemRepository();
-
-        if (dto.id) {
-            const pesq = await repItem.findOneBy({ id: dto.id });
-            if (pesq) {
-                rep = pesq;
-            }
-        }
-        rep.nome = dto.nome;
-        rep.descricao = dto.descricao;
-        rep.preco = preco.valor;
-        rep.ingredientes = dto.ingredientes;
-        rep.categoria = dto.categoria;
-        const novo = await repItem.save(rep);
-        rep = novo;
-
-        const item = new Item(rep.id, rep.nome, rep.descricao, preco, rep.ingredientes, rep.categoria);
-        return item;
+        return this.itemGateway.salvar(item);
     }
 
-    async get(id: number): Promise<Item> {
-        const repItem = AppDataSource.getRepository(ItemRepository);
-        const pesq = await repItem.findOneBy({ id: id });
-        let item : Item;
-        if (!pesq) {
-            throw new Error('Item não existe');            
-        }
-        item = new Item(pesq.id, pesq.nome, pesq.descricao, new Preco(pesq.preco), pesq.ingredientes, pesq.categoria);
-        return item;
-        
+    async get(id: number): Promise<IItem> {
+        return this.itemGateway.buscar(id);        
     }
 
     async delete(index: number): Promise<boolean> {
-        const repItem = AppDataSource.getRepository(ItemRepository);
-        const pesq = await repItem.findOneBy({ id: index });
-        if (pesq) {
-            try {
-                repItem.remove(pesq);
-                return true;
-            }
-            catch (error) {
-                return false;
-            }
-        }
-        else {
-            throw new Error('Registro não encontrado');
-        }
+        return this.itemGateway.deletar(index);
     }
 }

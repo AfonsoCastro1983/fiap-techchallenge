@@ -1,13 +1,18 @@
-import { AppDataSource } from "../../../infra/database/data-source";
-import { ItemRepository } from "../../../infra/database/repositories/Item";
 import { Categoria } from "../../../shared/enums/Categoria";
+import { IItemGateway } from "../../interfaces/item/IItemGateway";
+import { IItem } from "../../interfaces/item/IItem";
 
 export class ListarItensUseCase {
-    async listarPorCategoria(categoria: string): Promise<Array<ItemRepository>> {
-        const repItem = AppDataSource.getRepository(ItemRepository);
+    private ItemGateway: IItemGateway;
+    
+    constructor(itemGateway: IItemGateway) {
+        this.ItemGateway = itemGateway;
+    }
+
+    async listarPorCategoria(categoria: string): Promise<Array<IItem>> {
         const categoriaValida = Categoria[categoria as keyof typeof Categoria];
         if (categoriaValida) {
-            const itens = await repItem.findBy({categoria: categoriaValida});
+            const itens = this.ItemGateway.listaPorCategoria(categoriaValida);
             return itens;
         }
         else {

@@ -130,9 +130,8 @@ var MercadoPagoService = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.get(retorno_webhook.resource, { headers: headers })];
                     case 2:
                         resposta_mp = _a.sent();
-                        console.log("resposta_mp ->", resposta_mp.data);
                         transacao = resposta_mp.data;
-                        console.log('transacao -> ', transacao);
+                        console.log(transacao.id, transacao.status, transacao.order_status);
                         return [2 /*return*/, {
                                 id_pagamento: transacao.id.toString(),
                                 status: transacao.status,

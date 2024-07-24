@@ -37,89 +37,33 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CadastrarItemUseCase = void 0;
-var data_source_1 = require("../../../infra/database/data-source");
-var Item_1 = require("../../../infra/database/repositories/Item");
-var Item_2 = require("../../../domain/entities/Item");
+var Item_1 = require("../../../domain/entities/Item");
 var Preco_1 = require("../../../shared/valueobjects/Preco");
 var CadastrarItemUseCase = /** @class */ (function () {
-    function CadastrarItemUseCase() {
+    function CadastrarItemUseCase(itemGateway) {
+        this.itemGateway = itemGateway;
     }
     CadastrarItemUseCase.prototype.execute = function (dto) {
         return __awaiter(this, void 0, void 0, function () {
-            var preco, repItem, rep, pesq, novo, item;
+            var preco, item;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        preco = new Preco_1.Preco(dto.preco);
-                        repItem = data_source_1.AppDataSource.getRepository(Item_1.ItemRepository);
-                        rep = new Item_1.ItemRepository();
-                        if (!dto.id) return [3 /*break*/, 2];
-                        return [4 /*yield*/, repItem.findOneBy({ id: dto.id })];
-                    case 1:
-                        pesq = _a.sent();
-                        if (pesq) {
-                            rep = pesq;
-                        }
-                        _a.label = 2;
-                    case 2:
-                        rep.nome = dto.nome;
-                        rep.descricao = dto.descricao;
-                        rep.preco = preco.valor;
-                        rep.ingredientes = dto.ingredientes;
-                        rep.categoria = dto.categoria;
-                        return [4 /*yield*/, repItem.save(rep)];
-                    case 3:
-                        novo = _a.sent();
-                        rep = novo;
-                        item = new Item_2.Item(rep.id, rep.nome, rep.descricao, preco, rep.ingredientes, rep.categoria);
-                        return [2 /*return*/, item];
-                }
+                preco = new Preco_1.Preco(dto.preco);
+                item = new Item_1.Item(dto.id || 0, dto.nome, dto.descricao, preco, dto.ingredientes, dto.categoria);
+                return [2 /*return*/, this.itemGateway.salvar(item)];
             });
         });
     };
     CadastrarItemUseCase.prototype.get = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var repItem, pesq, item;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        repItem = data_source_1.AppDataSource.getRepository(Item_1.ItemRepository);
-                        return [4 /*yield*/, repItem.findOneBy({ id: id })];
-                    case 1:
-                        pesq = _a.sent();
-                        if (!pesq) {
-                            throw new Error('Item não existe');
-                        }
-                        item = new Item_2.Item(pesq.id, pesq.nome, pesq.descricao, new Preco_1.Preco(pesq.preco), pesq.ingredientes, pesq.categoria);
-                        return [2 /*return*/, item];
-                }
+                return [2 /*return*/, this.itemGateway.buscar(id)];
             });
         });
     };
     CadastrarItemUseCase.prototype.delete = function (index) {
         return __awaiter(this, void 0, void 0, function () {
-            var repItem, pesq;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        repItem = data_source_1.AppDataSource.getRepository(Item_1.ItemRepository);
-                        return [4 /*yield*/, repItem.findOneBy({ id: index })];
-                    case 1:
-                        pesq = _a.sent();
-                        if (pesq) {
-                            try {
-                                repItem.remove(pesq);
-                                return [2 /*return*/, true];
-                            }
-                            catch (error) {
-                                return [2 /*return*/, false];
-                            }
-                        }
-                        else {
-                            throw new Error('Registro não encontrado');
-                        }
-                        return [2 /*return*/];
-                }
+                return [2 /*return*/, this.itemGateway.deletar(index)];
             });
         });
     };

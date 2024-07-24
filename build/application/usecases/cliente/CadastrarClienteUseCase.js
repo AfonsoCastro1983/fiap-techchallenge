@@ -38,130 +38,46 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CadastrarClienteUseCase = void 0;
 var Cliente_1 = require("../../../domain/entities/Cliente");
-var Cliente_2 = require("../../../infra/database/repositories/Cliente");
 var Email_1 = require("../../../shared/valueobjects/Email");
 var CPF_1 = require("../../../shared/valueobjects/CPF");
-var data_source_1 = require("../../../infra/database/data-source");
 var CadastrarClienteUseCase = /** @class */ (function () {
-    function CadastrarClienteUseCase() {
+    function CadastrarClienteUseCase(clienteGateway) {
+        this.clienteGateway = clienteGateway;
     }
     CadastrarClienteUseCase.prototype.execute = function (dto) {
         return __awaiter(this, void 0, void 0, function () {
-            var nome, email, cpf, emailObj, cpfObj, clienteRepository, repCliente, cliPesqCPF, cliEmail, novo, cliente;
+            var nome, email, cpf, emailObj, cpfObj, cliente;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        nome = dto.nome, email = dto.email, cpf = dto.cpf;
-                        if (email) {
-                            emailObj = new Email_1.Email(email);
-                        }
-                        if (cpf) {
-                            cpfObj = new CPF_1.CPF(cpf);
-                        }
-                        clienteRepository = new Cliente_2.ClienteRepository();
-                        repCliente = data_source_1.AppDataSource.getRepository(Cliente_2.ClienteRepository);
-                        if (!(cpf && cpf != "")) return [3 /*break*/, 2];
-                        console.log('CPF', cpf);
-                        return [4 /*yield*/, this.buscarPorCPF(cpf)];
-                    case 1:
-                        cliPesqCPF = _a.sent();
-                        if (cliPesqCPF && cliPesqCPF.id != 0) {
-                            console.log('CPF', cliPesqCPF);
-                            return [2 /*return*/, cliPesqCPF];
-                        }
-                        _a.label = 2;
-                    case 2:
-                        if (!(email && email != "")) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.buscarPorEmail(email)];
-                    case 3:
-                        cliEmail = _a.sent();
-                        if (cliEmail && cliEmail.id != 0) {
-                            console.log('CPF', cliEmail);
-                            return [2 /*return*/, cliEmail];
-                        }
-                        _a.label = 4;
-                    case 4:
-                        console.log('Entrou para gravar');
-                        novo = new Cliente_2.ClienteRepository();
-                        novo.cpf = cpf || "";
-                        novo.email = email || "";
-                        novo.nome = nome;
-                        novo.ultima_modificacao = new Date();
-                        return [4 /*yield*/, repCliente.save(novo)];
-                    case 5:
-                        clienteRepository = _a.sent();
-                        console.log(clienteRepository);
-                        cliente = this.gerarClientePorRepositorio(clienteRepository);
-                        return [2 /*return*/, cliente];
+                nome = dto.nome, email = dto.email, cpf = dto.cpf;
+                if (email) {
+                    emailObj = new Email_1.Email(email);
                 }
+                if (cpf) {
+                    cpfObj = new CPF_1.CPF(cpf);
+                }
+                cliente = new Cliente_1.Cliente(0, nome, emailObj, cpfObj);
+                return [2 /*return*/, this.clienteGateway.salvar(cliente)];
             });
         });
     };
     CadastrarClienteUseCase.prototype.buscarPorCPF = function (cpf) {
         return __awaiter(this, void 0, void 0, function () {
-            var repCliente;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, data_source_1.AppDataSource.getRepository(Cliente_2.ClienteRepository).findOneBy({ cpf: cpf })];
-                    case 1:
-                        repCliente = _a.sent();
-                        if (repCliente) {
-                            return [2 /*return*/, this.gerarClientePorRepositorio(repCliente)];
-                        }
-                        else {
-                            return [2 /*return*/, new Cliente_1.Cliente(0, "")];
-                        }
-                        return [2 /*return*/];
-                }
+                return [2 /*return*/, this.clienteGateway.buscarPorCPF(cpf)];
             });
         });
     };
-    CadastrarClienteUseCase.prototype.gerarClientePorRepositorio = function (repCliente) {
-        var emailObj;
-        if (repCliente.email != "") {
-            emailObj = new Email_1.Email(repCliente.email);
-        }
-        var cpfObj;
-        if (repCliente.cpf != "") {
-            cpfObj = new CPF_1.CPF(repCliente.cpf);
-        }
-        return new Cliente_1.Cliente(repCliente.id, repCliente.nome, emailObj, cpfObj);
-    };
     CadastrarClienteUseCase.prototype.buscarPorEmail = function (email) {
         return __awaiter(this, void 0, void 0, function () {
-            var repCliente;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, data_source_1.AppDataSource.getRepository(Cliente_2.ClienteRepository).findOneBy({ email: email })];
-                    case 1:
-                        repCliente = _a.sent();
-                        if (repCliente) {
-                            return [2 /*return*/, this.gerarClientePorRepositorio(repCliente)];
-                        }
-                        else {
-                            return [2 /*return*/, new Cliente_1.Cliente(0, "")];
-                        }
-                        return [2 /*return*/];
-                }
+                return [2 /*return*/, this.clienteGateway.buscarPorEmail(email)];
             });
         });
     };
     CadastrarClienteUseCase.prototype.get = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var repCliente;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, data_source_1.AppDataSource.getRepository(Cliente_2.ClienteRepository).findOneBy({ id: id })];
-                    case 1:
-                        repCliente = _a.sent();
-                        if (repCliente) {
-                            return [2 /*return*/, new Cliente_1.Cliente(repCliente.id, repCliente.nome, new Email_1.Email(repCliente.email), new CPF_1.CPF(repCliente.cpf))];
-                        }
-                        else {
-                            return [2 /*return*/, new Cliente_1.Cliente(0, "")];
-                        }
-                        return [2 /*return*/];
-                }
+                return [2 /*return*/, this.clienteGateway.buscarPorID(id)];
             });
         });
     };

@@ -52,6 +52,7 @@ var tsoa_1 = require("tsoa");
 var CadastrarItemUseCase_1 = require("../../../application/usecases/item/CadastrarItemUseCase");
 var Categoria_1 = require("../../../shared/enums/Categoria");
 var ListarItensUseCase_1 = require("../../../application/usecases/item/ListarItensUseCase");
+var ItemGateway_1 = require("../../database/gateways/ItemGateway");
 var ItemController = /** @class */ (function () {
     function ItemController(cadastrarItemUseCase) {
         this.cadastrarItemUseCase = cadastrarItemUseCase;
@@ -145,15 +146,26 @@ var ItemController = /** @class */ (function () {
      */
     ItemController.prototype.buscaItemPorCategoria = function (categoria) {
         return __awaiter(this, void 0, void 0, function () {
-            var listaCategoria, itens;
+            var listaCategoria, itens, itensResponse;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        listaCategoria = new ListarItensUseCase_1.ListarItensUseCase();
+                        listaCategoria = new ListarItensUseCase_1.ListarItensUseCase(new ItemGateway_1.ItemGateway());
                         return [4 /*yield*/, listaCategoria.listarPorCategoria(categoria.toUpperCase())];
                     case 1:
                         itens = _a.sent();
-                        return [2 /*return*/, { itens: itens }];
+                        itensResponse = { itens: [] };
+                        itens.forEach(function (element) {
+                            itensResponse.itens.push({
+                                id: element.id,
+                                nome: element.nome,
+                                descricao: element.descricao,
+                                preco: element.preco.valor,
+                                ingredientes: element.ingredientes,
+                                categoria: element.categoria
+                            });
+                        });
+                        return [2 /*return*/, itensResponse];
                 }
             });
         });

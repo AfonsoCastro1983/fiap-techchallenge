@@ -1,18 +1,41 @@
 import { AppDataSource } from "../../../infra/database/data-source";
-import { ClienteRepository } from "../../../infra/database/repositories/Cliente";
-import { ItemRepository } from "../../../infra/database/repositories/Item";
-import { PedidoItemRepository, PedidoRepository } from "../../../infra/database/repositories/Pedido";
 import { Cliente } from "../../../domain/entities/Cliente";
 import { Item } from "../../../domain/entities/Item";
 import { Pedido } from "../../../domain/entities/Pedido";
 import { StatusPedido } from "../../../shared/enums/StatusPedido";
-import { PedidoItem } from "../../../domain/entities/PedidoItem";
 import { Preco } from "../../../shared/valueobjects/Preco";
 import { CadastrarPedidoDto } from "../../../domain/dtos/CadastrarPedidoDto";
+import { IPedidoGateway } from "../../interfaces/pedido/IPedidoGateway";
+import { Categoria } from "../../../shared/enums/Categoria";
+import { IPedido } from "../../interfaces/pedido/IPedido";
 
 export class CadastrarPedidoUseCase {
-    async execute(dto: CadastrarPedidoDto): Promise<Pedido> {
-        const repPedido = AppDataSource.getRepository(PedidoRepository);
+    private pedidoGateway: IPedidoGateway;
+
+    constructor(pedidoGateway: IPedidoGateway) {
+        this.pedidoGateway = pedidoGateway;
+    }
+
+
+    async execute(dto: CadastrarPedidoDto): Promise<IPedido> {
+        const pedido = new Pedido();
+        if (dto.cliente) {
+            pedido.cliente = new Cliente(dto.cliente, "");
+        }
+        if (dto.id) {
+            pedido.id = dto.id;
+        }        
+        pedido.atualizarStatus( dto.status );
+        if (!dto.itens) {
+            throw new Error('Pedido sem itens');
+        }
+
+        dto.itens.forEach(element => {
+            pedido.adicionarItem(new Item(element.itemId,'','',new Preco(element.preco),'',Categoria.LANCHE),element.quantidade);
+        });
+
+        return await this.pedidoGateway.criarPedido(pedido);
+        /*const repPedido = AppDataSource.getRepository(PedidoRepository);
         const repCliente = AppDataSource.getRepository(ClienteRepository);
         const repItem = AppDataSource.getRepository(ItemRepository);
         const repPedidoItem = AppDataSource.getRepository(PedidoItemRepository);
@@ -119,11 +142,13 @@ export class CadastrarPedidoUseCase {
         pedido.id = rep.id;
         await repPedidoItem.save(rep.pedidoItems);
 
-        return pedido;
+        return pedido;*/
     }
 
     async atualizaPedido(id: number, status: string): Promise<boolean> {
-        const repPedido = AppDataSource.getRepository(PedidoRepository);
+        const pedido = await this.pedidoGateway.atualizaStatusPedido(id,StatusPedido[status as keyof typeof StatusPedido]);
+        return pedido.status == status;
+        /*const repPedido = AppDataSource.getRepository(PedidoRepository);
         const pedido = await repPedido.findOneBy({ id: id });
         if (pedido) {
             const statusValido = StatusPedido[status.toUpperCase() as keyof typeof StatusPedido];
@@ -146,6 +171,6 @@ export class CadastrarPedidoUseCase {
         }
         else {
             throw new Error('Pedido não encontrado');
-        }
+        }*/
     }
 }
