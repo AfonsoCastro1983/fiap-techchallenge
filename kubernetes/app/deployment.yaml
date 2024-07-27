@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: afonsocastro/fiap-techchallenge:latest
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DATABASE_URL
+          value: "postgres://test:test@postgres-service:5432/lanchonete"
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - mountPath: /app/src
+          name: app-src
+      volumes:
+      - name: app-src
+        hostPath:
+          path: /usr/src/app

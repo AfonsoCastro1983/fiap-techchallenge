@@ -24,8 +24,10 @@ export class PedidoGateway implements IPedidoGateway {
 
         let rep = new PedidoRepository();
         if (pedido.cliente) {
+            rep.cliente = new ClienteRepository();
             rep.cliente.id = pedido.cliente.id;
         }
+        
         if (pedido.id > 0) {
             console.log('criação id já existente');
             rep.id = pedido.id;
@@ -38,12 +40,15 @@ export class PedidoGateway implements IPedidoGateway {
         }
         
         rep.data = new Date();
-        rep.status =  StatusPedido[pedido.status as keyof typeof StatusPedido];
+        
+        rep.status =  StatusPedido[pedido.status.toUpperCase() as keyof typeof StatusPedido];
+        
         if (pedido.cliente !== undefined) {
             rep.cliente = new ClienteRepository();
             rep.cliente.id = pedido.cliente.id;
             rep.cliente.nome = pedido.cliente.nome;
         }
+        
         rep.total = pedido.valorTotal.valor;
         rep = await repPedido.save(rep);
         rep.pedidoItems = [];
@@ -61,10 +66,11 @@ export class PedidoGateway implements IPedidoGateway {
             repPedItem.quantidade = element.quantidade.valor;
             rep.pedidoItems.push(repPedItem);
         });
+        
         console.log(rep.pedidoItems);
         pedido.id = rep.id;
         await repPedidoItem.save(rep.pedidoItems);
-
+        
         return pedido;        
     }
 
@@ -93,7 +99,7 @@ export class PedidoGateway implements IPedidoGateway {
             throw new Error('Pedido não encontrado');
         }
 
-        pedidoRegistrado.status = novo_status;
+        pedidoRegistrado.atualizarStatus(novo_status);
 
         pedidoRegistrado = await this.criarPedido(pedidoRegistrado);
         return pedidoRegistrado;

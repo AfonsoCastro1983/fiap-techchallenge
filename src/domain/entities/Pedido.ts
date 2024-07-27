@@ -5,7 +5,7 @@ import { PedidoItem } from './PedidoItem';
 import { StatusPedido } from '../../shared/enums/StatusPedido';
 import { IPedido } from '../../application/interfaces/pedido/IPedido';
 
-export class Pedido implements IPedido{
+export class Pedido implements IPedido {
     private _id: number = 0;
     private _cliente?: Cliente;
     private _itens: PedidoItem[] = [];

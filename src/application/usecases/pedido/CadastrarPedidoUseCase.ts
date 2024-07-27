@@ -34,6 +34,8 @@ export class CadastrarPedidoUseCase {
             pedido.adicionarItem(new Item(element.itemId,'','',new Preco(element.preco),'',Categoria.LANCHE),element.quantidade);
         });
 
+        console.log('Pedido para gravação:',pedido);
+
         return await this.pedidoGateway.criarPedido(pedido);
         /*const repPedido = AppDataSource.getRepository(PedidoRepository);
         const repCliente = AppDataSource.getRepository(ClienteRepository);
