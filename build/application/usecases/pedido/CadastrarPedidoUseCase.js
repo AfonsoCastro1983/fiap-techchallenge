@@ -67,6 +67,7 @@ var CadastrarPedidoUseCase = /** @class */ (function () {
                         dto.itens.forEach(function (element) {
                             pedido.adicionarItem(new Item_1.Item(element.itemId, '', '', new Preco_1.Preco(element.preco), '', Categoria_1.Categoria.LANCHE), element.quantidade);
                         });
+                        console.log('Pedido para gravação:', pedido);
                         return [4 /*yield*/, this.pedidoGateway.criarPedido(pedido)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }

@@ -44,11 +44,14 @@ var morgan_1 = __importDefault(require("morgan"));
 var routes_1 = __importDefault(require("./infra/http/routes/routes"));
 var swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 var data_source_1 = require("./infra/database/data-source");
+var dotenv_1 = __importDefault(require("dotenv"));
 var PORT = process.env.PORT || 8000;
 var app = (0, express_1.default)();
 data_source_1.AppDataSource.initialize().then(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         console.log('Banco conectado');
+        dotenv_1.default.config();
+        console.log('MODE:', process.env.MODE);
         app.use(express_1.default.json());
         app.use((0, morgan_1.default)("tiny"));
         app.use(express_1.default.static("public"));
