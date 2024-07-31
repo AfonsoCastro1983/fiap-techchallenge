@@ -1,9 +1,10 @@
 import { Body, Post, Get, Route, Tags, Put, Delete, Path } from "tsoa";
-import { CadastrarItemUseCase } from "../../../core/usecases/item/CadastrarItemUseCase";
-import { CadastrarItemDto } from "../../../core/usecases/item/CadastrarItemDto";
-import { Categoria } from "../../../core/domain/entities/Item";
+import { CadastrarItemUseCase } from "../../../application/usecases/item/CadastrarItemUseCase";
+import { CadastrarItemDto } from "../../../domain/dtos/CadastrarItemDto";
+import { Categoria } from "../../../shared/enums/Categoria";
 import { ItemRepository } from "../../database/repositories/Item";
-import { ListarItensUseCase } from "../../../core/usecases/item/ListarItensUseCase";
+import { ListarItensUseCase } from "../../../application/usecases/item/ListarItensUseCase";
+import { ItemGateway } from "../../database/gateways/ItemGateway";
 
 export interface ItemNovoRequest {
     nome: string;
@@ -22,12 +23,12 @@ export interface ItemResponse {
     categoria: string;
 }
 
-export interface ItemModificarRequest extends ItemResponse{
+export interface ItemModificarRequest extends ItemResponse {
 
 }
 
 export interface ItensArray {
-    itens: Array<ItemRepository>;
+    itens: Array<ItemResponse>;
 }
 
 @Route("item")
@@ -105,8 +106,19 @@ export default class ItemController {
      */
     @Get("/:categoria")
     public async buscaItemPorCategoria(@Path() categoria: string): Promise<ItensArray> {
-        const listaCategoria = new ListarItensUseCase();
+        const listaCategoria = new ListarItensUseCase(new ItemGateway());
         const itens = await listaCategoria.listarPorCategoria(categoria.toUpperCase());
-        return {itens};
+        const itensResponse: ItensArray = { itens: [] };
+        itens.forEach(element => {
+            itensResponse.itens.push({
+                id: element.id,
+                nome: element.nome,
+                descricao: element.descricao,
+                preco: element.preco.valor,
+                ingredientes: element.ingredientes,
+                categoria: element.categoria
+            })
+        });
+        return itensResponse;
     }
 }

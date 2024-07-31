@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { Categoria } from '../../../core/domain/entities/Item';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Categoria } from '../../../shared/enums/Categoria';
+import { PedidoItemRepository } from './Pedido';
 
 @Entity()
 export class ItemRepository {

@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { ClienteRepository } from './Cliente';
 import { ItemRepository } from './Item';
-import { StatusPedido } from '../../../core/domain/entities/Pedido';
+import { StatusPedido } from '../../../shared/enums/StatusPedido';
 
 @Entity()
 export class PedidoRepository {

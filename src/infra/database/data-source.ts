@@ -4,17 +4,26 @@ import { ClienteRepository } from "./repositories/Cliente"
 import { ItemRepository } from "./repositories/Item"
 import { PedidoRepository, PedidoItemRepository } from "./repositories/Pedido"
 import { PagamentoRepository } from "./repositories/Pagamento"
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+console.log("host:", process.env.TYPEORM_HOST);
+console.log("port:", 5432);
+console.log("username:", process.env.TYPEORM_USERNAME);
+console.log("password:", process.env.TYPEORM_PASS);
+console.log("database:", process.env.TYPEORM_DATABASE);
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "db",
+    host: process.env.TYPEORM_HOST,
     port: 5432,
-    username: "test",
-    password: "test",
-    database: "lanchonete",
+    username: process.env.TYPEORM_USERNAME,
+    password: process.env.TYPEORM_PASS,
+    database: process.env.TYPEORM_DATABASE,
     synchronize: true,
     logging: false,
     entities: [ClienteRepository, ItemRepository, PedidoRepository, PedidoItemRepository, PagamentoRepository],
     migrations: [],
-    subscribers: [],
+    subscribers: []
 })
