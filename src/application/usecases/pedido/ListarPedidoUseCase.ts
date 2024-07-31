@@ -22,6 +22,7 @@ export class ListarPedidosUseCase {
         
         const repPedidoItem = await AppDataSource.getRepository(PedidoItemRepository).find({where: {pedido: repository}, relations: ["item"]});
         repPedidoItem.forEach(element => {
+            console.log('converteRepositoryEmPedido loop');
             pedido.adicionarItem(new Item(element.item.id, element.item.nome, element.item.descricao, new Preco(element.preco), element.item.ingredientes,element.item.categoria),element.quantidade);
         });
 
@@ -32,7 +33,6 @@ export class ListarPedidosUseCase {
         const repPedido = AppDataSource.getRepository(PedidoRepository);
         console.log("Id", index);
         const repPedidos = await repPedido.find({ where: { id: index }, relations: ["cliente","pedidoItems"], order: { data: 'ASC' } });
-        console.log("buscaPorId", repPedido);
         return this.converteArrayPedidos(repPedidos);
     }
 

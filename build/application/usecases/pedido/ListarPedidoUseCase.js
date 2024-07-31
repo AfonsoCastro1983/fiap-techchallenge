@@ -65,6 +65,7 @@ var ListarPedidosUseCase = /** @class */ (function () {
                     case 1:
                         repPedidoItem = _a.sent();
                         repPedidoItem.forEach(function (element) {
+                            console.log('converteRepositoryEmPedido loop');
                             pedido.adicionarItem(new Item_1.Item(element.item.id, element.item.nome, element.item.descricao, new Preco_1.Preco(element.preco), element.item.ingredientes, element.item.categoria), element.quantidade);
                         });
                         return [2 /*return*/, pedido];
@@ -83,7 +84,6 @@ var ListarPedidosUseCase = /** @class */ (function () {
                         return [4 /*yield*/, repPedido.find({ where: { id: index }, relations: ["cliente", "pedidoItems"], order: { data: 'ASC' } })];
                     case 1:
                         repPedidos = _a.sent();
-                        console.log("buscaPorId", repPedido);
                         return [2 /*return*/, this.converteArrayPedidos(repPedidos)];
                 }
             });

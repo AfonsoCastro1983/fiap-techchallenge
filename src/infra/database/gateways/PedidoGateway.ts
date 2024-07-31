@@ -4,12 +4,9 @@ import { PedidoItemRepository, PedidoRepository } from "../repositories/Pedido";
 import { AppDataSource } from "../data-source";
 import { IPedido } from "../../../application/interfaces/pedido/IPedido";
 import { StatusPedido } from "../../../shared/enums/StatusPedido";
-import { Pedido } from "../../../domain/entities/Pedido";
-import { Cliente } from "../../../domain/entities/Cliente";
-import { Item } from "../../../domain/entities/Item";
-import { Preco } from "../../../shared/valueobjects/Preco";
 import { ClienteRepository } from "../repositories/Cliente";
 import { ItemRepository } from "../repositories/Item";
+import { ListarPedidosUseCase } from "../../../application/usecases/pedido/ListarPedidoUseCase";
 
 export class PedidoGateway implements IPedidoGateway {
     private repPedido: Repository<PedidoRepository>;
@@ -19,7 +16,8 @@ export class PedidoGateway implements IPedidoGateway {
     }
 
     async criarPedido(pedido: IPedido): Promise<IPedido> {
-        const repPedido = AppDataSource.getRepository(PedidoRepository);
+        console.log('PedidoGateway.criarPedido()');
+        console.log(pedido);
         const repPedidoItem = AppDataSource.getRepository(PedidoItemRepository);
 
         let rep = new PedidoRepository();
@@ -50,7 +48,7 @@ export class PedidoGateway implements IPedidoGateway {
         }
         
         rep.total = pedido.valorTotal.valor;
-        rep = await repPedido.save(rep);
+        rep = await this.repPedido.save(rep);
         rep.pedidoItems = [];
         pedido.itens.forEach(element => {
             let repPedItem = new PedidoItemRepository();
@@ -76,21 +74,17 @@ export class PedidoGateway implements IPedidoGateway {
 
     async buscarPedido(pedido: number): Promise<IPedido> {
         console.log("buscarPedido");
-        const repPedidos = await this.repPedido.find({ where: { id: pedido }, relations: ["cliente","pedidoItems"], order: { data: 'ASC' } });
-        if (!repPedidos) {
+        const pedidos = await new ListarPedidosUseCase().buscaPorID(pedido);
+        if (!pedidos) {
+            throw new Error('Erro na pesquisa de pedidos');
+        }
+        if (pedidos.length==0) {
             throw new Error('Pedido não encontrado');
         }
-        const pedidoRegistrado = new Pedido();
-        pedidoRegistrado.id = repPedidos[0].id;
-        pedidoRegistrado.cliente = new Cliente(repPedidos[0].cliente.id, repPedidos[0].cliente.nome);       
-        pedidoRegistrado.atualizarStatus(repPedidos[0].status);
+        const pedidoRegistrado = pedidos[0];
+        console.log('Pedido registrado =>',pedidoRegistrado);
 
-        const repPedidoItem = await AppDataSource.getRepository(PedidoItemRepository).find({where: {pedido: repPedidos}, relations: ["item"]});
-        repPedidoItem.forEach(element => {
-            pedidoRegistrado.adicionarItem(new Item(element.item.id, element.item.nome, element.item.descricao, new Preco(element.preco), element.item.ingredientes,element.item.categoria),element.quantidade);
-        });
-
-        return pedidoRegistrado;        
+        return pedidoRegistrado;
     }
 
     async atualizaStatusPedido(pedido: number, novo_status: StatusPedido): Promise<IPedido> {

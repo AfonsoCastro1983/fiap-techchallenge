@@ -14,14 +14,17 @@ export class ExecutarPagamentoUseCase {
     }
 
     async iniciar(pedido: number, integradorPagamentos: IIntegradorPagamentoGateway): Promise<Pagamento> {
+        console.log('ExecutarPagamentoUseCase.iniciar()');
         let pagamento = await this.pagamentoGateway.iniciarPagamento(pedido);
         if (!pagamento) {
             throw new Error('Pagamento não foi criado');
         }
         const pedidoGateway = new PedidoGateway();
-        const buscaPedido = await pedidoGateway.buscarPedido(pedido);
-        
-
+        const buscaPedido = await pedidoGateway.buscarPedido(pedido);        
+        if (!buscaPedido) {
+            throw new Error('Pedido não encontrado');
+        }
+        console.log('buscaPedido',buscaPedido);
         const resposta = await integradorPagamentos.gerarQRCode(buscaPedido, "Pedido Lanchonete");
         console.log(resposta);
         if (resposta.identificador_pedido != "") {
@@ -51,6 +54,7 @@ export class ExecutarPagamentoUseCase {
     }
 
     async cancelar(pedido: number): Promise<Pagamento> {
+        console.log('ExecutarPagamentoUseCase.cancelar()');
         const pagamento = await this.pagamentoGateway.buscarPagamento(pedido);
         if (!pagamento) {
             throw new Error('Pagamento não encontrado');

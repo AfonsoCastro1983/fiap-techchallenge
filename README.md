@@ -130,7 +130,8 @@ Para acessar a documentação **Swagger** deste projeto clique neste [link](http
 O sistema pode iniciar com um cliente ou não. Os endpoints para gerenciamento de clientes são:
 
 - **POST /cliente**: Criação de um novo cliente.
-- **POST /cliente/cpf**: Criação de um novo cliente utilizando CPF.
+- **GET /cliente/cpf**: Busca de um cliente usando CPF.
+- **GET /cliente/email**: Busca de um cliente usando e-mail.
 
 ### Sessão Item
 
@@ -146,6 +147,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
       "ingredientes": "Pão, carne, queijo, alface, tomate",
       "categoria": "LANCHE"
     }
+    ```
+    ```json
     {
       "nome": "Refrigerante",
       "descricao": "Refrigerante gelado de 350ml.",
@@ -153,6 +156,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
       "ingredientes": "Água, açúcar, gás carbônico",
       "categoria": "BEBIDA"
     }
+    ```
+    ```json
     {
       "nome": "Batata Frita",
       "descricao": "Batata frita crocante e salgada.",
@@ -160,6 +165,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
       "ingredientes": "Batata, óleo, sal",
       "categoria": "ACOMPANHAMENTO"
     }
+    ```
+    ```json
     {
       "nome": "Sorvete",
       "descricao": "Sorvete de chocolate com calda.",
@@ -167,6 +174,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
       "ingredientes": "Leite, açúcar, cacau",
       "categoria": "SOBREMESA"
     }
+    ```
+    ```json
     {
       "nome": "Sanduíche Natural",
       "descricao": "Sanduíche natural com frango e salada.",
@@ -174,6 +183,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
       "ingredientes": "Pão integral, frango, alface, tomate",
       "categoria": "LANCHE"
     }
+    ```
+    ```json
     {
       "nome": "Suco de Laranja",
       "descricao": "Suco de laranja natural de 300ml.",
@@ -181,6 +192,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
       "ingredientes": "Laranja",
       "categoria": "BEBIDA"
     }
+    ```
+    ```json
     {
       "nome": "Anéis de Cebola",
       "descricao": "Anéis de cebola fritos e crocantes.",
@@ -188,6 +201,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
       "ingredientes": "Cebola, farinha, óleo",
       "categoria": "ACOMPANHAMENTO"
     }
+    ```
+    ```json
     {
       "nome": "Brownie",
       "descricao": "Brownie de chocolate com nozes.",
@@ -195,6 +210,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
       "ingredientes": "Chocolate, farinha, ovos, nozes",
       "categoria": "SOBREMESA"
     }
+    ```
+    ```json
     {
       "nome": "Cheeseburger",
       "descricao": "Cheeseburger com queijo cheddar.",
@@ -202,6 +219,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
       "ingredientes": "Pão, carne, queijo cheddar, alface",
       "categoria": "LANCHE"
     }
+    ```
+    ```json
     {
       "nome": "Milkshake",
       "descricao": "Milkshake de morango de 400ml.",
@@ -212,7 +231,7 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
     ```
 
 - **PUT /item**: Alteração de um item.
-- **GET /item/{id}**: Busca de um item pelo identificador.
+- **DELETE /item/{id}**: Deleta um item pelo código identificador.
 - **GET /item/{categoria}**: Busca de itens por categoria. As categorias são: LANCHE, BEBIDA, ACOMPANHAMENTO e SOBREMESA.
 
 ### Sessão Pedido
@@ -220,7 +239,8 @@ Gerencie os itens do cardápio da lanchonete através dos seguintes endpoints:
 Gerencie os pedidos da lanchonete através dos seguintes endpoints:
 
 - **GET /pedido/{id}**: Busca de um pedido específico pelo identificador.
-- **GET /pedido/{status}**: Busca de pedidos por status. Os status são: NOVO, ENVIAR_PARA_PAGAMENTO, CANCELADO, ENVIADO_PARA_A_COZINHA, EM_PREPARACAO, PREPARADO, PRONTO_PARA_ENTREGA, ENTREGUE.
+- **GET /pedido/listagem/{status}**: Busca de pedidos por status. Os status são: NOVO, ENVIAR_PARA_PAGAMENTO, CANCELADO, ENVIADO_PARA_A_COZINHA, EM_PREPARACAO, PREPARADO, PRONTO_PARA_ENTREGA, ENTREGUE.
+- **GET /pedido/{status}**: Busca pedidos pelos status descritos no módulo 2 (Pronto (PRONTO_PARA_ENTREGA) > Em Preparação (EM_PREPARACAO) > Recebido (ENVIADO_PARA_A_COZINHA))
 - **POST /pedido**: Criação de um novo pedido. É possível não preencher o número do cliente para casos em que o cliente não quis se identificar. O preço é passado no payload porque o preço pode mudar ao longo da criação do pedido e deve-se manter o preço inicialmente acordado.
 - **PUT /pedido/status**: Mudança do status do pedido. Os status são: NOVO, ENVIAR_PARA_PAGAMENTO, CANCELADO, ENVIADO_PARA_A_COZINHA, EM_PREPARACAO, PREPARADO, PRONTO_PARA_ENTREGA, ENTREGUE.
 
@@ -229,8 +249,8 @@ Gerencie os pedidos da lanchonete através dos seguintes endpoints:
 Gerencie os pagamentos dos pedidos através dos seguintes endpoints:
 
 - **POST /pagamento/iniciar**: Inicia o pagamento para um pedido e muda o status do pedido para ENVIAR_PARA_PAGAMENTO.
-- **POST /pagamento/confirmar**: Confirma o pagamento para um pedido e muda o status do pedido para ENVIADO_PARA_A_COZINHA.
-- **POST /pagamento/cancelar**: Cancela o pagamento para um pedido e muda o status do pedido para CANCELADO.
+- **GET /pagamento/status/{pedido}**: Buscar o status de pagamento de um pedido específico.
+- **POST /pagamento/webhook**: Recebe confirmação de pagamento do integrador
 
 
 ## Link para o Miro - DDD e Event Storming

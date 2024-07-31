@@ -49,7 +49,9 @@ var ExecutarPagamentoUseCase = /** @class */ (function () {
             var pagamento, pedidoGateway, buscaPedido, resposta;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.pagamentoGateway.iniciarPagamento(pedido)];
+                    case 0:
+                        console.log('ExecutarPagamentoUseCase.iniciar()');
+                        return [4 /*yield*/, this.pagamentoGateway.iniciarPagamento(pedido)];
                     case 1:
                         pagamento = _a.sent();
                         if (!pagamento) {
@@ -59,6 +61,10 @@ var ExecutarPagamentoUseCase = /** @class */ (function () {
                         return [4 /*yield*/, pedidoGateway.buscarPedido(pedido)];
                     case 2:
                         buscaPedido = _a.sent();
+                        if (!buscaPedido) {
+                            throw new Error('Pedido não encontrado');
+                        }
+                        console.log('buscaPedido', buscaPedido);
                         return [4 /*yield*/, integradorPagamentos.gerarQRCode(buscaPedido, "Pedido Lanchonete")];
                     case 3:
                         resposta = _a.sent();
@@ -107,7 +113,9 @@ var ExecutarPagamentoUseCase = /** @class */ (function () {
             var pagamento, mudarStatusPedido;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.pagamentoGateway.buscarPagamento(pedido)];
+                    case 0:
+                        console.log('ExecutarPagamentoUseCase.cancelar()');
+                        return [4 /*yield*/, this.pagamentoGateway.buscarPagamento(pedido)];
                     case 1:
                         pagamento = _a.sent();
                         if (!pagamento) {

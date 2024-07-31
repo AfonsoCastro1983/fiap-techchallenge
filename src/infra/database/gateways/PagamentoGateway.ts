@@ -71,7 +71,7 @@ export class PagamentoGateway implements IPagamentoGateway {
         if (pedidoRegistrado.status != StatusPedido.NOVO) {
             throw new Error('Pedido já possui status avançado');
         }
-        console.log("buscaPedido => ",pedidoRegistrado.id);
+        
         let rep = new PagamentoRepository();
         rep.pedido = new PedidoRepository();
         rep.pedido.id = pedidoRegistrado.id;
@@ -85,7 +85,7 @@ export class PagamentoGateway implements IPagamentoGateway {
 
         const pagamento = this.converterRepository(rep);
         const mudarStatusPedido = new PedidoGateway();
-        mudarStatusPedido.atualizaStatusPedido(pedido, StatusPedido.ENVIAR_PARA_PAGAMENTO);
+        await mudarStatusPedido.atualizaStatusPedido(pedido, StatusPedido.ENVIAR_PARA_PAGAMENTO);
         console.log('Pedido atualizado');
 
         return pagamento;

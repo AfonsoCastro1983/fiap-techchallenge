@@ -71,6 +71,7 @@ export class MercadoPagoService implements IIntegradorPagamentoGateway {
         expiracao.setMinutes(expiracao.getMinutes() + this._TempoPagamento);
         expiracao.setHours(expiracao.getHours() - 3);
         console.log('expiração:', expiracao);
+        console.log('pedido recebido:',pedido);
 
         const payload = {
             cash_out: { amount: 0 },
