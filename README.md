@@ -121,7 +121,7 @@ O sistema inclui as seguintes classes de domínio:
 
 ## Acesso à documentação implantada na AWS
 
-Para acessar a documentação **Swagger** deste projeto clique neste [link](http://a4a4929cf174b4e1193e5c9f1d6e3f9e-302812528.us-east-2.elb.amazonaws.com/docs/).
+Para acessar a documentação **Swagger** deste projeto clique neste [link](http://http://ab50dd85777144c7d805dc903f5972a4-18774161.us-east-2.elb.amazonaws.com/docs/).
 
 ## Endpoints
 
