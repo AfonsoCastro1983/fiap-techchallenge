@@ -6,9 +6,9 @@ import { StatusPedido } from "../../../shared/enums/StatusPedido";
 export interface IPedido {
     id: number;
     data: Date;
-    status: string;
+    status: StatusPedido;
     cliente?: ICliente;
     valorTotal: Preco;
     itens: IPedidoItem[];
-    atualizarStatus(novoStatus: StatusPedido): void
+    atualizarStatus(novoStatus: StatusPedido): void;
 }
