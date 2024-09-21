@@ -76,13 +76,16 @@ var CadastrarPedidoUseCase = /** @class */ (function () {
     };
     CadastrarPedidoUseCase.prototype.atualizaPedido = function (id, status) {
         return __awaiter(this, void 0, void 0, function () {
-            var pedido;
+            var status_valido, pedido;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.pedidoGateway.atualizaStatusPedido(id, StatusPedido_1.StatusPedido[status])];
+                    case 0:
+                        status_valido = StatusPedido_1.StatusPedido[status.toUpperCase()];
+                        return [4 /*yield*/, this.pedidoGateway.atualizaStatusPedido(id, status_valido)];
                     case 1:
                         pedido = _a.sent();
-                        return [2 /*return*/, pedido.status == status];
+                        console.log(pedido.status, status_valido.toString());
+                        return [2 /*return*/, pedido.status == status_valido.toString()];
                 }
             });
         });
