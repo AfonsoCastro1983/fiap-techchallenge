@@ -1,6 +1,6 @@
 # Lanchonete API - Pós-Tech FIAP - Arquitetura de Software
 
-Este repositório contém o código-fonte para a API backend de uma lanchonete, desenvolvido durante o primeiro módulo da Pós-Tech FIAP de Arquitetura de Software. O projeto foi criado utilizando a metodologia Domain Driven Design (DDD) e princípios de Arquitetura Hexagonal (Ports and Adapters), com o objetivo de criar um sistema escalável e testável.
+Este repositório contém o código-fonte para a API backend de uma lanchonete, desenvolvido durante o primeiro módulo da Pós-Tech FIAP de Arquitetura de Software. O projeto foi criado utilizando a metodologia Domain Driven Design (DDD) e princípios de Clear Archtecture, com o objetivo de criar um sistema escalável e testável.
 
 ## Fluxograma do projeto e problema resumido
 Uma lanchonete de bairro que está expandindo enfrenta desafios com a organização dos pedidos devido à ausência de um sistema de controle. Isso pode causar confusões e atrasos, com pedidos sendo perdidos ou preparados incorretamente, resultando em insatisfação dos clientes. Um exemplo claro é um cliente que faz um pedido complexo e personalizado que pode ser mal interpretado quando passado manualmente para a cozinha.
@@ -121,7 +121,7 @@ O sistema inclui as seguintes classes de domínio:
 
 ## Acesso à documentação implantada na AWS
 
-Para acessar a documentação **Swagger** deste projeto clique neste [link](http://a4a4929cf174b4e1193e5c9f1d6e3f9e-302812528.us-east-2.elb.amazonaws.com/docs/).
+Para acessar a documentação **Swagger** deste projeto clique neste [link](http://ab50dd85777144c7d805dc903f5972a4-18774161.us-east-2.elb.amazonaws.com/docs/).
 
 ## Endpoints
 
