@@ -38,8 +38,7 @@ export class PedidoGateway implements IPedidoGateway {
         }
         
         rep.data = new Date();
-        
-        rep.status =  StatusPedido[pedido.status.toUpperCase() as keyof typeof StatusPedido];
+        rep.status = pedido.status;
         
         if (pedido.cliente !== undefined) {
             rep.cliente = new ClienteRepository();
@@ -49,6 +48,7 @@ export class PedidoGateway implements IPedidoGateway {
         
         rep.total = pedido.valorTotal.valor;
         rep = await this.repPedido.save(rep);
+        console.log('Gravação -> ', rep);
         rep.pedidoItems = [];
         pedido.itens.forEach(element => {
             let repPedItem = new PedidoItemRepository();
@@ -92,6 +92,8 @@ export class PedidoGateway implements IPedidoGateway {
         if (!pedidoRegistrado) {
             throw new Error('Pedido não encontrado');
         }
+
+        console.log('AtualizaPedido(',pedido,',',novo_status,')');
 
         pedidoRegistrado.atualizarStatus(novo_status);
 

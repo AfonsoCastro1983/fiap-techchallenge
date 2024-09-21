@@ -40,8 +40,10 @@ export class CadastrarPedidoUseCase {
     }
 
     async atualizaPedido(id: number, status: string): Promise<boolean> {
-        const pedido = await this.pedidoGateway.atualizaStatusPedido(id,StatusPedido[status as keyof typeof StatusPedido]);
-        return pedido.status == status;
+        const status_valido = StatusPedido[status.toUpperCase() as keyof typeof StatusPedido];
+        const pedido = await this.pedidoGateway.atualizaStatusPedido(id,status_valido);
+        console.log(pedido.status,status_valido.toString());
+        return pedido.status == status_valido.toString();
         /*const repPedido = AppDataSource.getRepository(PedidoRepository);
         const pedido = await repPedido.findOneBy({ id: id });
         if (pedido) {
