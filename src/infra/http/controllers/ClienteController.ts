@@ -1,9 +1,11 @@
 import { Body, Path, Post, Get, Route, Tags } from "tsoa";
 import { CadastrarClienteDto } from "../../../domain/dtos/CadastrarClienteDto";
 import { CadastrarClienteUseCase } from "../../../application/usecases/cliente/CadastrarClienteUseCase";
+import { ClienteGateway } from "../../database/gateways/ClienteGateway";
 
 export interface ClienteRequest {
     nome: string;
+    idcognito: string,
     email: string;
     cpf: string;
 }
@@ -20,8 +22,8 @@ interface ClienteResponse {
 export default class ClienteController {
     private cadastrarClienteUseCase: CadastrarClienteUseCase;
 
-    constructor(cadastrarClientUseCase: CadastrarClienteUseCase) {
-        this.cadastrarClienteUseCase = cadastrarClientUseCase;
+    constructor(clienteGateway: ClienteGateway) {
+        this.cadastrarClienteUseCase = new CadastrarClienteUseCase(clienteGateway);
     }
     /**
      * Cadastro do cliente: nome e e-mail
@@ -30,6 +32,7 @@ export default class ClienteController {
     public async salvarCliente(@Body() body: ClienteRequest): Promise<ClienteResponse> {
         const dto: CadastrarClienteDto = {
             nome: body.nome,
+            idcognito: body.idcognito,
             email: body.email,
             cpf: body.cpf
         }

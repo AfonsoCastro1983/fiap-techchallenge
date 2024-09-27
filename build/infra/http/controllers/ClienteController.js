@@ -50,9 +50,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tsoa_1 = require("tsoa");
 var CadastrarClienteUseCase_1 = require("../../../application/usecases/cliente/CadastrarClienteUseCase");
+var ClienteGateway_1 = require("../../database/gateways/ClienteGateway");
 var ClienteController = /** @class */ (function () {
-    function ClienteController(cadastrarClientUseCase) {
-        this.cadastrarClienteUseCase = cadastrarClientUseCase;
+    function ClienteController(clienteGateway) {
+        this.cadastrarClienteUseCase = new CadastrarClienteUseCase_1.CadastrarClienteUseCase(clienteGateway);
     }
     /**
      * Cadastro do cliente: nome e e-mail
@@ -66,6 +67,7 @@ var ClienteController = /** @class */ (function () {
                     case 0:
                         dto = {
                             nome: body.nome,
+                            idcognito: body.idcognito,
                             email: body.email,
                             cpf: body.cpf
                         };
@@ -150,7 +152,7 @@ var ClienteController = /** @class */ (function () {
     ClienteController = __decorate([
         (0, tsoa_1.Route)("cliente"),
         (0, tsoa_1.Tags)("Cliente"),
-        __metadata("design:paramtypes", [CadastrarClienteUseCase_1.CadastrarClienteUseCase])
+        __metadata("design:paramtypes", [ClienteGateway_1.ClienteGateway])
     ], ClienteController);
     return ClienteController;
 }());

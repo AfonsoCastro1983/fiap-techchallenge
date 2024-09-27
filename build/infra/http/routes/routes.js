@@ -41,13 +41,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var ClienteController_1 = __importDefault(require("../controllers/ClienteController"));
-var CadastrarClienteUseCase_1 = require("../../../application/usecases/cliente/CadastrarClienteUseCase");
 var ItemController_1 = __importDefault(require("../controllers/ItemController"));
-var CadastrarItemUseCase_1 = require("../../../application/usecases/item/CadastrarItemUseCase");
 var PedidoController_1 = __importDefault(require("../controllers/PedidoController"));
-var CadastrarPedidoUseCase_1 = require("../../../application/usecases/pedido/CadastrarPedidoUseCase");
 var PagamentoController_1 = __importDefault(require("../controllers/PagamentoController"));
-var ExecutarPagamentoUseCase_1 = require("../../../application/usecases/pagamento/ExecutarPagamentoUseCase");
 var MercadoPagoService_1 = require("../../mercadopago/MercadoPagoService");
 var ClienteGateway_1 = require("../../database/gateways/ClienteGateway");
 var ItemGateway_1 = require("../../database/gateways/ItemGateway");
@@ -62,7 +58,7 @@ router.post("/cliente", function (req, res) { return __awaiter(void 0, void 0, v
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new ClienteController_1.default(new CadastrarClienteUseCase_1.CadastrarClienteUseCase(new ClienteGateway_1.ClienteGateway()));
+                controller = new ClienteController_1.default(new ClienteGateway_1.ClienteGateway());
                 return [4 /*yield*/, controller.salvarCliente(req.body)];
             case 1:
                 cliente = _a.sent();
@@ -89,7 +85,7 @@ router.get("/cliente/cpf/:cpf", function (req, res) { return __awaiter(void 0, v
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new ClienteController_1.default(new CadastrarClienteUseCase_1.CadastrarClienteUseCase(new ClienteGateway_1.ClienteGateway()));
+                controller = new ClienteController_1.default(new ClienteGateway_1.ClienteGateway());
                 return [4 /*yield*/, controller.buscarCPF(req.params.cpf)];
             case 1:
                 cliente = _a.sent();
@@ -111,7 +107,7 @@ router.get("/cliente/email/:email", function (req, res) { return __awaiter(void 
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new ClienteController_1.default(new CadastrarClienteUseCase_1.CadastrarClienteUseCase(new ClienteGateway_1.ClienteGateway()));
+                controller = new ClienteController_1.default(new ClienteGateway_1.ClienteGateway());
                 return [4 /*yield*/, controller.buscarEmail(req.params.email)];
             case 1:
                 cliente = _a.sent();
@@ -134,7 +130,7 @@ router.post("/item", function (req, res) { return __awaiter(void 0, void 0, void
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new ItemController_1.default(new CadastrarItemUseCase_1.CadastrarItemUseCase(new ItemGateway_1.ItemGateway()));
+                controller = new ItemController_1.default(new ItemGateway_1.ItemGateway());
                 return [4 /*yield*/, controller.salvarNovoItem(req.body)];
             case 1:
                 item = _a.sent();
@@ -156,7 +152,7 @@ router.put("/item", function (req, res) { return __awaiter(void 0, void 0, void 
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new ItemController_1.default(new CadastrarItemUseCase_1.CadastrarItemUseCase(new ItemGateway_1.ItemGateway()));
+                controller = new ItemController_1.default(new ItemGateway_1.ItemGateway());
                 return [4 /*yield*/, controller.editarItem(req.body)];
             case 1:
                 item = _a.sent();
@@ -178,7 +174,7 @@ router.delete("/item/:id", function (req, res) { return __awaiter(void 0, void 0
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new ItemController_1.default(new CadastrarItemUseCase_1.CadastrarItemUseCase(new ItemGateway_1.ItemGateway()));
+                controller = new ItemController_1.default(new ItemGateway_1.ItemGateway());
                 return [4 /*yield*/, controller.eliminarItem(Number(req.params.id))];
             case 1:
                 resposta = _a.sent();
@@ -206,7 +202,7 @@ router.get("/item/:categoria", function (req, res) { return __awaiter(void 0, vo
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new ItemController_1.default(new CadastrarItemUseCase_1.CadastrarItemUseCase(new ItemGateway_1.ItemGateway()));
+                controller = new ItemController_1.default(new ItemGateway_1.ItemGateway());
                 return [4 /*yield*/, controller.buscaItemPorCategoria(req.params.categoria)];
             case 1:
                 resposta = _a.sent();
@@ -230,7 +226,7 @@ router.post("/pagamento/iniciar", function (req, res) { return __awaiter(void 0,
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(new PagamentoGateway_1.PagamentoGateway()), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
+                controller = new PagamentoController_1.default(new PagamentoGateway_1.PagamentoGateway(), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
                 return [4 /*yield*/, controller.iniciarPagamento(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -252,7 +248,7 @@ router.post("/pagamento/confirmar", function (req, res) { return __awaiter(void 
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(new PagamentoGateway_1.PagamentoGateway()), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
+                controller = new PagamentoController_1.default(new PagamentoGateway_1.PagamentoGateway(), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
                 return [4 /*yield*/, controller.confirmarPagamento(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -274,7 +270,7 @@ router.post("/pagamento/cancelar", function (req, res) { return __awaiter(void 0
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(new PagamentoGateway_1.PagamentoGateway()), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
+                controller = new PagamentoController_1.default(new PagamentoGateway_1.PagamentoGateway(), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
                 return [4 /*yield*/, controller.cancelarPagamento(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -297,7 +293,7 @@ router.post("/pagamento/webhook", function (req, res) { return __awaiter(void 0,
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 console.log(req.body);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(new PagamentoGateway_1.PagamentoGateway()), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
+                controller = new PagamentoController_1.default(new PagamentoGateway_1.PagamentoGateway(), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
                 return [4 /*yield*/, controller.receberStatusPagamentoIntegrador(req.body)];
             case 1:
                 resposta = _a.sent();
@@ -321,7 +317,7 @@ router.get("/pagamento/status/:pedido", function (req, res) { return __awaiter(v
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PagamentoController_1.default(new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(new PagamentoGateway_1.PagamentoGateway()), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
+                controller = new PagamentoController_1.default(new PagamentoGateway_1.PagamentoGateway(), new MercadoPagoService_1.MercadoPagoService(req, 'pagamento/webhook'));
                 return [4 /*yield*/, controller.buscarStatusPedido(Number(req.params.pedido))];
             case 1:
                 resposta = _a.sent();
@@ -339,45 +335,68 @@ router.get("/pagamento/status/:pedido", function (req, res) { return __awaiter(v
 //Pedido
 ///2ªFase - Entregáveis 1 - Gravar pedido
 router.post("/pedido", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var controller, item, error_13;
+    var authHeader, cliGate, cli, controller, item, error_13;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                controller = new PedidoController_1.default(new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase(new PedidoGateway_1.PedidoGateway()));
-                return [4 /*yield*/, controller.cadastrarPedido(req.body)];
+                _a.trys.push([0, 3, , 4]);
+                authHeader = req.headers.authorization;
+                if (!authHeader) {
+                    return [2 /*return*/, res.status(401).json({ error: "Cabeçalho de Autorização não encontrado" })];
+                }
+                cliGate = new ClienteGateway_1.ClienteGateway();
+                return [4 /*yield*/, cliGate.buscarPorToken(authHeader)];
             case 1:
+                cli = _a.sent();
+                if (cli) {
+                    req.body.cliente = cli.id;
+                }
+                console.log("body", req.body);
+                controller = new PedidoController_1.default(new PedidoGateway_1.PedidoGateway());
+                return [4 /*yield*/, controller.cadastrarPedido(req.body)];
+            case 2:
                 item = _a.sent();
                 return [2 /*return*/, res.status(201).send(item)];
-            case 2:
+            case 3:
                 error_13 = _a.sent();
                 if (error_13 instanceof Error) {
                     return [2 /*return*/, res.status(500).json({ erro: error_13.message })];
                 }
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
 ///2ªFase - Entregáveis 1 - v. Atualizar status do pedido
 router.put("/pedido/status", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var controller, item, error_14;
+    var authHeader, cliGate, cli, controller, item, error_14;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                controller = new PedidoController_1.default(new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase(new PedidoGateway_1.PedidoGateway()));
-                return [4 /*yield*/, controller.atualizarStatusPedido(req.body)];
+                _a.trys.push([0, 3, , 4]);
+                authHeader = req.headers.authorization;
+                if (!authHeader) {
+                    return [2 /*return*/, res.status(401).json({ error: "Cabeçalho de Autorização não encontrado" })];
+                }
+                cliGate = new ClienteGateway_1.ClienteGateway();
+                return [4 /*yield*/, cliGate.buscarPorToken(authHeader)];
             case 1:
+                cli = _a.sent();
+                if (cli) {
+                    req.body.cliente = cli.id;
+                }
+                controller = new PedidoController_1.default(new PedidoGateway_1.PedidoGateway());
+                return [4 /*yield*/, controller.atualizarStatusPedido(req.body)];
+            case 2:
                 item = _a.sent();
                 return [2 /*return*/, res.status(201).send(item)];
-            case 2:
+            case 3:
                 error_14 = _a.sent();
                 if (error_14 instanceof Error) {
                     return [2 /*return*/, res.status(500).json({ erro: error_14.message })];
                 }
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
@@ -388,7 +407,7 @@ router.get("/pedido/listagem/:status", function (req, res) { return __awaiter(vo
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PedidoController_1.default(new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase(new PedidoGateway_1.PedidoGateway()));
+                controller = new PedidoController_1.default(new PedidoGateway_1.PedidoGateway());
                 console.log("status", req.params.status);
                 return [4 /*yield*/, controller.buscaPorStatus(req.params.status)];
             case 1:
@@ -420,7 +439,7 @@ router.get("/pedido/status/", function (req, res) { return __awaiter(void 0, voi
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PedidoController_1.default(new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase(new PedidoGateway_1.PedidoGateway()));
+                controller = new PedidoController_1.default(new PedidoGateway_1.PedidoGateway());
                 return [4 /*yield*/, controller.buscaPorStatusModulo2()];
             case 1:
                 resposta = _a.sent();
@@ -448,7 +467,7 @@ router.get("/pedido/id/:id", function (req, res) { return __awaiter(void 0, void
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                controller = new PedidoController_1.default(new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase(new PedidoGateway_1.PedidoGateway()));
+                controller = new PedidoController_1.default(new PedidoGateway_1.PedidoGateway());
                 return [4 /*yield*/, controller.buscaPorId(Number(req.params.id))];
             case 1:
                 resposta = _a.sent();

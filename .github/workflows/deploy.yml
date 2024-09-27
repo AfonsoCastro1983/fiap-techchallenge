@@ -1,0 +1,43 @@
+name: Build and Push Docker Image to ECR
+
+on:
+  push:
+    branches:
+      - main  # Defina o branch que você quer monitorar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout o código
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Configura o AWS CLI para autenticar no ECR
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+
+    # Autentica no Docker com o ECR
+    - name: Log in to Amazon ECR
+      run: |
+        aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 992382363343.dkr.ecr.us-east-2.amazonaws.com
+
+    # Constrói a imagem Docker
+    - name: Build Docker image
+      run: |
+        docker build -t apptechchallenge-repo .
+
+    # Marca a imagem Docker
+    - name: Tag Docker image
+      run: |
+        docker tag apptechchallenge-repo:latest 992382363343.dkr.ecr.us-east-2.amazonaws.com/apptechchallenge-repo:latest
+
+    # Faz o push da imagem para o ECR
+    - name: Push Docker image to ECR
+      run: |
+        docker push 992382363343.dkr.ecr.us-east-2.amazonaws.com/apptechchallenge-repo:latest

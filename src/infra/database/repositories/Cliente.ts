@@ -5,6 +5,8 @@ export class ClienteRepository {
     @PrimaryGeneratedColumn()
     id!: number;
     @Column()
+    idcognito!: string;
+    @Column()
     nome!: string;
     @Column()
     cpf!: string;

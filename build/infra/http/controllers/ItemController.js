@@ -54,8 +54,8 @@ var Categoria_1 = require("../../../shared/enums/Categoria");
 var ListarItensUseCase_1 = require("../../../application/usecases/item/ListarItensUseCase");
 var ItemGateway_1 = require("../../database/gateways/ItemGateway");
 var ItemController = /** @class */ (function () {
-    function ItemController(cadastrarItemUseCase) {
-        this.cadastrarItemUseCase = cadastrarItemUseCase;
+    function ItemController(itemGateway) {
+        this.cadastrarItemUseCase = new CadastrarItemUseCase_1.CadastrarItemUseCase(itemGateway);
     }
     /**
      * Cadastro de um item no cardápio
@@ -201,7 +201,7 @@ var ItemController = /** @class */ (function () {
     ItemController = __decorate([
         (0, tsoa_1.Route)("item"),
         (0, tsoa_1.Tags)("Item"),
-        __metadata("design:paramtypes", [CadastrarItemUseCase_1.CadastrarItemUseCase])
+        __metadata("design:paramtypes", [ItemGateway_1.ItemGateway])
     ], ItemController);
     return ItemController;
 }());

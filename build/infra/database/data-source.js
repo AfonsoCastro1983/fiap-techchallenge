@@ -28,6 +28,9 @@ exports.AppDataSource = new typeorm_1.DataSource({
     logging: false,
     entities: [Cliente_1.ClienteRepository, Item_1.ItemRepository, Pedido_1.PedidoRepository, Pedido_1.PedidoItemRepository, Pagamento_1.PagamentoRepository],
     migrations: [],
-    subscribers: []
+    subscribers: [],
+    ssl: {
+        rejectUnauthorized: false,
+    }
 });
 //# sourceMappingURL=data-source.js.map

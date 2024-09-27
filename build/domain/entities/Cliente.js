@@ -2,8 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cliente = void 0;
 var Cliente = /** @class */ (function () {
-    function Cliente(id, nome, email, cpf) {
+    function Cliente(id, nome, email, cpf, idcognito) {
         this._id = id;
+        this._idcognito = 'vazio';
+        if (idcognito) {
+            this._idcognito = idcognito;
+        }
         this._nome = nome;
         this._email = email;
         this._cpf = cpf;
@@ -11,6 +15,16 @@ var Cliente = /** @class */ (function () {
     Object.defineProperty(Cliente.prototype, "id", {
         get: function () {
             return this._id;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Cliente.prototype, "idcognito", {
+        get: function () {
+            return this._idcognito;
+        },
+        set: function (value) {
+            this._idcognito = value;
         },
         enumerable: false,
         configurable: true

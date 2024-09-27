@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { IClienteGateway } from "../../../application/interfaces/cliente/IClienteGateway";
 import { ClienteRepository } from "../repositories/Cliente";
 import { Cliente } from "../../../domain/entities/Cliente";
@@ -16,7 +17,8 @@ export class ClienteGateway implements IClienteGateway {
         if (repCliente.cpf != "") {
             cpfObj = new CPF(repCliente.cpf);
         }
-        return new Cliente(repCliente.id, repCliente.nome, emailObj, cpfObj);
+        const cli = new Cliente(repCliente.id, repCliente.nome, emailObj, cpfObj, repCliente.idcognito);
+        return cli
     }
 
     async salvar(cliente: Cliente): Promise<Cliente> {
@@ -78,6 +80,23 @@ export class ClienteGateway implements IClienteGateway {
         }
         else {
             return new Cliente(0, "");
+        }
+    }
+
+    async buscarPorToken(token: string): Promise<Cliente> {
+        token = token.replace('Bearer ','');
+        
+        const decoded = jwt.decode(token);
+        console.log("Decoded: ",decoded);
+        const idcognito = (decoded as any).sub;
+        console.log("userID: ",idcognito);
+
+        const repCliente = await AppDataSource.getRepository(ClienteRepository).findOneBy({ idcognito: idcognito});
+        if (repCliente) {
+            return this.gerarClientePorRepositorio(repCliente);
+        }
+        else {
+            return new Cliente(0,"");
         }
     }
 }
