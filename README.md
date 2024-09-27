@@ -24,6 +24,8 @@ Além das interações com o cliente, o sistema oferecerá recursos administrati
 - **TypeORM**: ORM (Object-Relational Mapping) para qualquer banco de dados.
 - **Amazon EKS**: Ferramenta de orquestração de kubernetes
 - **Código QR Mercado Pago**: Desenvolvimento da integração com o mercado pago para geração de QR-Codes e captura do pagamento
+- **AWS Lambda**: Serviço de computação serverless que executa código em resposta a eventos, sem necessidade de gerenciar servidores.
+- **API Gateway**: Serviço gerenciado que permite criar, publicar e gerenciar APIs seguras e escaláveis para acessar aplicações backend.
 
 ## Estrutura do Projeto
 
@@ -57,7 +59,7 @@ A estrutura segue o padrão Clean Architecture, focando em uma separação clara
 - **Interface Segregation Principle (ISP)**: Muitas interfaces específicas são melhores do que uma interface única.
 - **Dependency Inversion Principle (DIP)**: Dependência de abstrações, não de implementações concretas.
 
-## Arquitetura AWS
+## Arquitetura AWS para o Kubernetes
 ![alt text](EKS_CloudFormation.png)
 
 ### Descrição

@@ -1,6 +1,7 @@
 import { Body, Get, Path, Post, Route, Tags } from "tsoa";
 import { ExecutarPagamentoUseCase } from "../../../application/usecases/pagamento/ExecutarPagamentoUseCase";
 import { IIntegradorPagamentoGateway } from "../../../application/interfaces/pagamento/IIntegradorPagamento";
+import { PagamentoGateway } from "../../database/gateways/PagamentoGateway";
 
 export interface PagamentoRequest {
     pedido: number;
@@ -22,8 +23,8 @@ export default class PagamentoController {
     private pagamentoUseCase: ExecutarPagamentoUseCase;
     private integradorPagamentos: IIntegradorPagamentoGateway;
 
-    constructor(pagamentoUseCase: ExecutarPagamentoUseCase, integradorPagamentos: IIntegradorPagamentoGateway) {
-        this.pagamentoUseCase = pagamentoUseCase;
+    constructor(pagamentoGateway: PagamentoGateway, integradorPagamentos: IIntegradorPagamentoGateway) {
+        this.pagamentoUseCase = new ExecutarPagamentoUseCase(pagamentoGateway);
         this.integradorPagamentos = integradorPagamentos;
     }
     /**

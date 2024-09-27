@@ -12,7 +12,7 @@ export class CadastrarClienteUseCase {
     }
 
     async execute(dto: CadastrarClienteDto): Promise<Cliente> {
-        const { nome, email, cpf } = dto;
+        const { nome, idcognito, email, cpf } = dto;
 
         let emailObj: Email | undefined;
         if (email) {
@@ -25,6 +25,10 @@ export class CadastrarClienteUseCase {
         }
 
         const cliente = new Cliente(0,nome,emailObj,cpfObj);
+
+        if (idcognito) {
+            cliente.idcognito = idcognito;
+        }
 
         return this.clienteGateway.salvar(cliente);
     }

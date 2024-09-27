@@ -51,9 +51,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tsoa_1 = require("tsoa");
 var CadastrarPedidoUseCase_1 = require("../../../application/usecases/pedido/CadastrarPedidoUseCase");
 var ListarPedidoUseCase_1 = require("../../../application/usecases/pedido/ListarPedidoUseCase");
+var PedidoGateway_1 = require("../../database/gateways/PedidoGateway");
 var PedidoController = /** @class */ (function () {
-    function PedidoController(cadastrarPedidoUseCase) {
-        this.cadastrarPedidoUseCase = cadastrarPedidoUseCase;
+    function PedidoController(pedidoGateway) {
+        this.cadastrarPedidoUseCase = new CadastrarPedidoUseCase_1.CadastrarPedidoUseCase(pedidoGateway);
     }
     PedidoController.prototype.formataResposta = function (pedidos) {
         if (!pedidos || pedidos.length === 0) {
@@ -100,7 +101,16 @@ var PedidoController = /** @class */ (function () {
     };
     /**
      * Busca pedidos por um status específico
-     * @param status status do pedido
+     * @param status status do pedido.
+     * Opções de status para pesquisar:
+     * - NOVO (Pedido que acabou de ser solicitado),
+     * - ENVIAR_PARA_PAGAMENTO (Pedido que já foi conlcuído pelo cliente e o mesmo solicitou seu pagamento)
+     * - CANCELADO (Pedido Cancelado, pelo cliente ou pelo sistema)
+     * - ENVIADO_PARA_A_COZINHA (Pedido já pago, enviado para iniciar a preparação)
+     * - EM_PREPARACAO (Pedido em preparação)
+     * - PREPARADO (Pedido finalizado e disponível para embalagem)
+     * - PRONTO_PARA_ENTREGA (Pedido embalado ou pronto para entrega no balcão)
+     * - ENTREGUE (Pedido entregue pelo cliente)
      * @returns
      * Lista de pedidos encontrados
      */
@@ -233,7 +243,7 @@ var PedidoController = /** @class */ (function () {
     PedidoController = __decorate([
         (0, tsoa_1.Route)("pedido"),
         (0, tsoa_1.Tags)("Pedido"),
-        __metadata("design:paramtypes", [CadastrarPedidoUseCase_1.CadastrarPedidoUseCase])
+        __metadata("design:paramtypes", [PedidoGateway_1.PedidoGateway])
     ], PedidoController);
     return PedidoController;
 }());

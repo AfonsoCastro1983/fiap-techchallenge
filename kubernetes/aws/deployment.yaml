@@ -21,10 +21,10 @@ spec:
         - containerPort: 8000
         env:
         - name: TYPEORM_HOST
-          value: techchallenge-fiap-rdsdbinstance-faymyf2cxqj6.c9qyy4w40svf.us-east-2.rds.amazonaws.com
+          value: lanchonete-fiap.c9qyy4w40svf.us-east-2.rds.amazonaws.com
         - name: TYPEORM_USERNAME
           value: masteruser
         - name: TYPEORM_PASS
-          value: 5EGOy5Glo646
+          value: masterpassword
         - name: TYPEORM_DATABASE
           value: lanchonete

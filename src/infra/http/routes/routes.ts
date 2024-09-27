@@ -1,12 +1,8 @@
 import express from "express";
 import ClienteController from "../controllers/ClienteController";
-import { CadastrarClienteUseCase } from "../../../application/usecases/cliente/CadastrarClienteUseCase";
 import ItemController from "../controllers/ItemController";
-import { CadastrarItemUseCase } from "../../../application/usecases/item/CadastrarItemUseCase";
 import PedidoController from "../controllers/PedidoController";
-import { CadastrarPedidoUseCase } from "../../../application/usecases/pedido/CadastrarPedidoUseCase";
 import PagamentoController from "../controllers/PagamentoController";
-import { ExecutarPagamentoUseCase } from "../../../application/usecases/pagamento/ExecutarPagamentoUseCase";
 import { MercadoPagoService } from "../../mercadopago/MercadoPagoService";
 import { ClienteGateway } from "../../database/gateways/ClienteGateway";
 import { ItemGateway } from "../../database/gateways/ItemGateway";
@@ -19,7 +15,7 @@ const router = express.Router()
 ///1ªFase - Entregáveis 2 - i. Cadastro de clientes
 router.post("/cliente", async (req, res) => {
     try {
-        const controller = new ClienteController(new CadastrarClienteUseCase(new ClienteGateway()));
+        const controller = new ClienteController(new ClienteGateway());
         const cliente = await controller.salvarCliente(req.body);
 
         return res.status(201).send({
@@ -38,7 +34,7 @@ router.post("/cliente", async (req, res) => {
 ///1ªFase - Entregáveis 2 - ii. Identificação do cliente via CPF
 router.get("/cliente/cpf/:cpf", async (req, res) => {
     try {
-        const controller = new ClienteController(new CadastrarClienteUseCase(new ClienteGateway()));
+        const controller = new ClienteController(new ClienteGateway());
         const cliente = await controller.buscarCPF(req.params.cpf);
 
         return res.status(201).send({ cliente });
@@ -53,7 +49,7 @@ router.get("/cliente/cpf/:cpf", async (req, res) => {
 ///Identificação do cliente via Email
 router.get("/cliente/email/:email", async (req, res) => {
     try {
-        const controller = new ClienteController(new CadastrarClienteUseCase(new ClienteGateway()));
+        const controller = new ClienteController(new ClienteGateway());
         const cliente = await controller.buscarEmail(req.params.email);
 
         return res.status(201).send({ cliente });
@@ -69,7 +65,7 @@ router.get("/cliente/email/:email", async (req, res) => {
 ///1ªFase - Entregáveis 2 - iii. Criar
 router.post("/item", async (req, res) => {
     try {
-        const controller = new ItemController(new CadastrarItemUseCase(new ItemGateway()));
+        const controller = new ItemController(new ItemGateway());
         const item = await controller.salvarNovoItem(req.body);
 
         return res.status(201).send(item);
@@ -83,7 +79,7 @@ router.post("/item", async (req, res) => {
 ///1ªFase - Entregáveis 2 - iii. Editar
 router.put("/item", async (req, res) => {
     try {
-        const controller = new ItemController(new CadastrarItemUseCase(new ItemGateway()));
+        const controller = new ItemController(new ItemGateway());
         const item = await controller.editarItem(req.body);
 
         return res.status(201).send(item);
@@ -98,7 +94,7 @@ router.put("/item", async (req, res) => {
 ///1ªFase - Entregáveis 2 - iii. Remover
 router.delete("/item/:id", async (req, res) => {
     try {
-        const controller = new ItemController(new CadastrarItemUseCase(new ItemGateway()));
+        const controller = new ItemController(new ItemGateway());
         const resposta = await controller.eliminarItem(Number(req.params.id));
 
         if (resposta) {
@@ -117,7 +113,7 @@ router.delete("/item/:id", async (req, res) => {
 ///1ªFase - Entregáveis 2 - iv. Buscar item por categoria
 router.get("/item/:categoria", async (req, res) => {
     try {
-        const controller = new ItemController(new CadastrarItemUseCase(new ItemGateway()));
+        const controller = new ItemController(new ItemGateway());
         const resposta = await controller.buscaItemPorCategoria(req.params.categoria);
 
         return res.status(200).json(resposta);
@@ -134,7 +130,7 @@ router.get("/item/:categoria", async (req, res) => {
 ////Iniciar pagamento
 router.post("/pagamento/iniciar", async (req, res) => {
     try {
-        const controller = new PagamentoController(new ExecutarPagamentoUseCase(new PagamentoGateway()), new MercadoPagoService(req,'pagamento/webhook'));
+        const controller = new PagamentoController(new PagamentoGateway(), new MercadoPagoService(req,'pagamento/webhook'));
         const resposta = await controller.iniciarPagamento(req.body);
 
         return res.status(200).json(resposta);
@@ -149,7 +145,7 @@ router.post("/pagamento/iniciar", async (req, res) => {
 ////Confirmar pagamento
 router.post("/pagamento/confirmar", async (req, res) => {
     try {
-        const controller = new PagamentoController(new ExecutarPagamentoUseCase(new PagamentoGateway()), new MercadoPagoService(req,'pagamento/webhook'));
+        const controller = new PagamentoController(new PagamentoGateway(), new MercadoPagoService(req,'pagamento/webhook'));
         const resposta = await controller.confirmarPagamento(req.body);
 
         return res.status(200).json(resposta);
@@ -164,7 +160,7 @@ router.post("/pagamento/confirmar", async (req, res) => {
 ////Cancelar pagamento
 router.post("/pagamento/cancelar", async (req, res) => {
     try {
-        const controller = new PagamentoController(new ExecutarPagamentoUseCase(new PagamentoGateway()), new MercadoPagoService(req,'pagamento/webhook'));
+        const controller = new PagamentoController(new PagamentoGateway(), new MercadoPagoService(req,'pagamento/webhook'));
         const resposta = await controller.cancelarPagamento(req.body);
 
         return res.status(200).json(resposta);
@@ -180,7 +176,7 @@ router.post("/pagamento/cancelar", async (req, res) => {
 router.post("/pagamento/webhook", async (req, res) => {
     try {
         console.log(req.body);
-        const controller = new PagamentoController(new ExecutarPagamentoUseCase(new PagamentoGateway()), new MercadoPagoService(req,'pagamento/webhook'));
+        const controller = new PagamentoController(new PagamentoGateway(), new MercadoPagoService(req,'pagamento/webhook'));
         const resposta = await controller.receberStatusPagamentoIntegrador(req.body);
         console.log('respostaWebhook:',resposta);
         return res.status(200).json(resposta);
@@ -197,7 +193,7 @@ router.post("/pagamento/webhook", async (req, res) => {
 ////2ªFase - Entregáveis 1 - a.ii
 router.get("/pagamento/status/:pedido", async (req, res) => {
     try {
-        const controller = new PagamentoController(new ExecutarPagamentoUseCase(new PagamentoGateway()), new MercadoPagoService(req,'pagamento/webhook'));
+        const controller = new PagamentoController(new PagamentoGateway(), new MercadoPagoService(req,'pagamento/webhook'));
         const resposta = await controller.buscarStatusPedido(Number(req.params.pedido));
 
         return res.status(200).json(resposta);
@@ -213,7 +209,21 @@ router.get("/pagamento/status/:pedido", async (req, res) => {
 ///2ªFase - Entregáveis 1 - Gravar pedido
 router.post("/pedido", async (req, res) => {
     try {
-        const controller = new PedidoController(new CadastrarPedidoUseCase(new PedidoGateway()));
+        let authHeader = req.headers.authorization;
+        
+        if (!authHeader) {
+            return res.status(401).json({ error: "Cabeçalho de Autorização não encontrado" });
+        }
+        //Retorna se token é de um cliente válido
+        const cliGate = new ClienteGateway();
+        const cli = await cliGate.buscarPorToken(authHeader);
+        if (cli) {
+            req.body.cliente = cli.id;
+        }
+
+        console.log("body", req.body);
+
+        const controller = new PedidoController(new PedidoGateway());
         const item = await controller.cadastrarPedido(req.body);
 
         return res.status(201).send(item);
@@ -227,7 +237,19 @@ router.post("/pedido", async (req, res) => {
 ///2ªFase - Entregáveis 1 - v. Atualizar status do pedido
 router.put("/pedido/status", async (req, res) => {
     try {
-        const controller = new PedidoController(new CadastrarPedidoUseCase(new PedidoGateway()));
+        let authHeader = req.headers.authorization;
+        
+        if (!authHeader) {
+            return res.status(401).json({ error: "Cabeçalho de Autorização não encontrado" });
+        }
+        //Retorna se token é de um cliente válido
+        const cliGate = new ClienteGateway();
+        const cli = await cliGate.buscarPorToken(authHeader);
+        if (cli) {
+            req.body.cliente = cli.id;
+        }
+        
+        const controller = new PedidoController(new PedidoGateway());
         const item = await controller.atualizarStatusPedido(req.body);
 
         return res.status(201).send(item);
@@ -241,7 +263,7 @@ router.put("/pedido/status", async (req, res) => {
 ///1ªFase - Entregáveis 2 - vi. Listar pedidos
 router.get("/pedido/listagem/:status", async (req, res) => {
     try {
-        const controller = new PedidoController(new CadastrarPedidoUseCase(new PedidoGateway()));
+        const controller = new PedidoController(new PedidoGateway());
         console.log("status",req.params.status);
         const resposta = await controller.buscaPorStatus(req.params.status);
 
@@ -265,7 +287,7 @@ router.get("/pedido/listagem/:status", async (req, res) => {
 ////3. Pedidos com status Finalizado (ENTREGUE) não devem aparecer na lista
 router.get("/pedido/status/", async (req, res) => {
     try {
-        const controller = new PedidoController(new CadastrarPedidoUseCase(new PedidoGateway()));
+        const controller = new PedidoController(new PedidoGateway());
         const resposta = await controller.buscaPorStatusModulo2();
 
         if (resposta) {
@@ -285,7 +307,7 @@ router.get("/pedido/status/", async (req, res) => {
 ///Buscar pedido
 router.get("/pedido/id/:id", async (req, res) => {
     try {
-        const controller = new PedidoController(new CadastrarPedidoUseCase(new PedidoGateway()));
+        const controller = new PedidoController(new PedidoGateway());
         const resposta = await controller.buscaPorId(Number(req.params.id));
 
         if (resposta) {

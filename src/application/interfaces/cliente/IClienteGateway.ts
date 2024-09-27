@@ -5,4 +5,5 @@ export interface IClienteGateway {
     buscarPorID(id: number): Promise<Cliente>;
     buscarPorCPF(cpf: string): Promise<Cliente>;
     buscarPorEmail(email: string): Promise<Cliente>;
+    buscarPorToken(token: string): Promise<Cliente>;
 }

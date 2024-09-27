@@ -50,9 +50,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tsoa_1 = require("tsoa");
 var ExecutarPagamentoUseCase_1 = require("../../../application/usecases/pagamento/ExecutarPagamentoUseCase");
+var PagamentoGateway_1 = require("../../database/gateways/PagamentoGateway");
 var PagamentoController = /** @class */ (function () {
-    function PagamentoController(pagamentoUseCase, integradorPagamentos) {
-        this.pagamentoUseCase = pagamentoUseCase;
+    function PagamentoController(pagamentoGateway, integradorPagamentos) {
+        this.pagamentoUseCase = new ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase(pagamentoGateway);
         this.integradorPagamentos = integradorPagamentos;
     }
     /**
@@ -215,7 +216,7 @@ var PagamentoController = /** @class */ (function () {
     PagamentoController = __decorate([
         (0, tsoa_1.Route)("pagamento"),
         (0, tsoa_1.Tags)("Pagamento"),
-        __metadata("design:paramtypes", [ExecutarPagamentoUseCase_1.ExecutarPagamentoUseCase, Object])
+        __metadata("design:paramtypes", [PagamentoGateway_1.PagamentoGateway, Object])
     ], PagamentoController);
     return PagamentoController;
 }());

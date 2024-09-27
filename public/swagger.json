@@ -37,6 +37,9 @@
 					"nome": {
 						"type": "string"
 					},
+					"idcognito": {
+						"type": "string"
+					},
 					"email": {
 						"type": "string"
 					},
@@ -46,6 +49,7 @@
 				},
 				"required": [
 					"nome",
+					"idcognito",
 					"email",
 					"cpf"
 				],
@@ -653,7 +657,7 @@
 				"security": [],
 				"parameters": [
 					{
-						"description": "status do pedido",
+						"description": "status do pedido.\nOpções de status para pesquisar:\n- NOVO (Pedido que acabou de ser solicitado),\n- ENVIAR_PARA_PAGAMENTO (Pedido que já foi conlcuído pelo cliente e o mesmo solicitou seu pagamento)\n- CANCELADO (Pedido Cancelado, pelo cliente ou pelo sistema)\n- ENVIADO_PARA_A_COZINHA (Pedido já pago, enviado para iniciar a preparação)\n- EM_PREPARACAO (Pedido em preparação)\n- PREPARADO (Pedido finalizado e disponível para embalagem)\n- PRONTO_PARA_ENTREGA (Pedido embalado ou pronto para entrega no balcão)\n- ENTREGUE (Pedido entregue pelo cliente)",
 						"in": "path",
 						"name": "status",
 						"required": true,

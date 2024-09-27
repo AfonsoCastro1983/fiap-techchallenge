@@ -46,9 +46,9 @@ var CadastrarClienteUseCase = /** @class */ (function () {
     }
     CadastrarClienteUseCase.prototype.execute = function (dto) {
         return __awaiter(this, void 0, void 0, function () {
-            var nome, email, cpf, emailObj, cpfObj, cliente;
+            var nome, idcognito, email, cpf, emailObj, cpfObj, cliente;
             return __generator(this, function (_a) {
-                nome = dto.nome, email = dto.email, cpf = dto.cpf;
+                nome = dto.nome, idcognito = dto.idcognito, email = dto.email, cpf = dto.cpf;
                 if (email) {
                     emailObj = new Email_1.Email(email);
                 }
@@ -56,6 +56,9 @@ var CadastrarClienteUseCase = /** @class */ (function () {
                     cpfObj = new CPF_1.CPF(cpf);
                 }
                 cliente = new Cliente_1.Cliente(0, nome, emailObj, cpfObj);
+                if (idcognito) {
+                    cliente.idcognito = idcognito;
+                }
                 return [2 /*return*/, this.clienteGateway.salvar(cliente)];
             });
         });

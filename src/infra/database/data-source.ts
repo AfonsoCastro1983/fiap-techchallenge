@@ -25,5 +25,8 @@ export const AppDataSource = new DataSource({
     logging: false,
     entities: [ClienteRepository, ItemRepository, PedidoRepository, PedidoItemRepository, PagamentoRepository],
     migrations: [],
-    subscribers: []
+    subscribers: [],
+    ssl: {
+        rejectUnauthorized: false,
+    }      
 })

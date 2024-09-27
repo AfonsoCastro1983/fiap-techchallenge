@@ -2,7 +2,6 @@ import { Body, Post, Get, Route, Tags, Put, Delete, Path } from "tsoa";
 import { CadastrarItemUseCase } from "../../../application/usecases/item/CadastrarItemUseCase";
 import { CadastrarItemDto } from "../../../domain/dtos/CadastrarItemDto";
 import { Categoria } from "../../../shared/enums/Categoria";
-import { ItemRepository } from "../../database/repositories/Item";
 import { ListarItensUseCase } from "../../../application/usecases/item/ListarItensUseCase";
 import { ItemGateway } from "../../database/gateways/ItemGateway";
 
@@ -36,8 +35,8 @@ export interface ItensArray {
 export default class ItemController {
     private cadastrarItemUseCase: CadastrarItemUseCase;
 
-    constructor(cadastrarItemUseCase: CadastrarItemUseCase) {
-        this.cadastrarItemUseCase = cadastrarItemUseCase;
+    constructor(itemGateway: ItemGateway) {
+        this.cadastrarItemUseCase = new CadastrarItemUseCase(itemGateway);
     }
     /**
      * Cadastro de um item no cardápio

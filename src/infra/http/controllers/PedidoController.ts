@@ -3,6 +3,7 @@ import { CadastrarPedidoDto } from "../../../domain/dtos/CadastrarPedidoDto";
 import { CadastrarPedidoUseCase } from "../../../application/usecases/pedido/CadastrarPedidoUseCase";
 import { ListarPedidosUseCase } from "../../../application/usecases/pedido/ListarPedidoUseCase";
 import { IPedido } from "../../../application/interfaces/pedido/IPedido";
+import { PedidoGateway } from "../../database/gateways/PedidoGateway";
 
 export interface PedidoRequest extends CadastrarPedidoDto {
 }
@@ -30,8 +31,8 @@ interface Pedidos {
 export default class PedidoController {
     private cadastrarPedidoUseCase: CadastrarPedidoUseCase;
 
-    constructor(cadastrarPedidoUseCase: CadastrarPedidoUseCase) {
-        this.cadastrarPedidoUseCase = cadastrarPedidoUseCase;
+    constructor(pedidoGateway: PedidoGateway) {
+        this.cadastrarPedidoUseCase = new CadastrarPedidoUseCase(pedidoGateway);
     }
 
     private formataResposta(pedidos: Array<IPedido>) {
@@ -75,7 +76,16 @@ export default class PedidoController {
     }
     /**
      * Busca pedidos por um status específico
-     * @param status status do pedido
+     * @param status status do pedido.
+     * Opções de status para pesquisar:
+     * - NOVO (Pedido que acabou de ser solicitado),
+     * - ENVIAR_PARA_PAGAMENTO (Pedido que já foi conlcuído pelo cliente e o mesmo solicitou seu pagamento)
+     * - CANCELADO (Pedido Cancelado, pelo cliente ou pelo sistema)
+     * - ENVIADO_PARA_A_COZINHA (Pedido já pago, enviado para iniciar a preparação)
+     * - EM_PREPARACAO (Pedido em preparação)
+     * - PREPARADO (Pedido finalizado e disponível para embalagem)
+     * - PRONTO_PARA_ENTREGA (Pedido embalado ou pronto para entrega no balcão)
+     * - ENTREGUE (Pedido entregue pelo cliente)
      * @returns 
      * Lista de pedidos encontrados
      */
