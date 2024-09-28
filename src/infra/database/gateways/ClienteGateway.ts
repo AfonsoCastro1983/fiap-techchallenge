@@ -46,6 +46,7 @@ export class ClienteGateway implements IClienteGateway {
         novo.cpf = cliente.cpf?.value || "";
         novo.email = cliente.email?.value || "";
         novo.nome = cliente.nome;
+        novo.idcognito = cliente.idcognito;
         novo.ultima_modificacao = new Date();
         clienteRepository = await repCliente.save(novo);
 
