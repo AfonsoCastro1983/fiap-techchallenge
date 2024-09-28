@@ -37,6 +37,8 @@ export default class ClienteController {
             cpf: body.cpf
         }
 
+        console.log(dto);
+
         const cliente = await this.cadastrarClienteUseCase.execute(dto);
 
         return {

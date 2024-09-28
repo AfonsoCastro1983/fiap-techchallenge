@@ -24,11 +24,7 @@ export class CadastrarClienteUseCase {
             cpfObj = new CPF(cpf);
         }
 
-        const cliente = new Cliente(0,nome,emailObj,cpfObj);
-
-        if (idcognito) {
-            cliente.idcognito = idcognito;
-        }
+        const cliente = new Cliente(0,nome,emailObj,cpfObj, idcognito);
 
         return this.clienteGateway.salvar(cliente);
     }
