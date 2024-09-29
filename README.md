@@ -260,6 +260,110 @@ Gerencie os pagamentos dos pedidos através dos seguintes endpoints:
 Para mais detalhes sobre a modelagem e o design do sistema, acesse o quadro do Miro:
 [Link para o Miro](https://miro.com/app/board/uXjVKJNKqKg=/?share_link_id=577001495836)
 
+## Documentação do Banco de Dados - Lanchonete
+
+### Informações Gerais:
+- **Nome do Banco de Dados**: Lanchonete
+- **Sistema de Gerenciamento de Banco de Dados**: PostgreSQL via AWS RDS
+- **Objetivo**: Sistema de gestão para uma lanchonete
+
+### Especificação das Tabelas:
+
+#### Diagrama Entidade-Relacionamento
+![alt text](lanchonete-er.png)
+
+#### 1. Tabela: `pedido_item_repository`
+- **Descrição**: Armazena os itens que compõem os pedidos realizados pelos clientes.
+- **Colunas**:
+  - `id` (PK): Chave primária.
+  - `quantidade`: Quantidade do item no pedido.
+  - `preco`: Preço unitário do item.
+  - `pedidoId` (FK): Referência ao pedido no qual o item faz parte (relacionamento com `pedido_repository`).
+  - `itemId` (FK): Referência ao item (relacionamento com `item_repository`).
+  
+- **Relacionamentos**:
+  - FK `pedidoId`: Relacionado a `pedido_repository` (N:1).
+  - FK `itemId`: Relacionado a `item_repository` (N:1).
+
+---
+
+#### 2. Tabela: `item_repository`
+- **Descrição**: Armazena os dados dos itens disponíveis na lanchonete.
+- **Colunas**:
+  - `id` (PK): Chave primária.
+  - `nome`: Nome do item.
+  - `descricao`: Descrição do item.
+  - `preco`: Preço do item.
+  - `ingredientes`: Lista de ingredientes do item.
+  - `categoria`: Categoria à qual o item pertence.
+
+- **Relacionamentos**:
+  - Relacionado a `pedido_item_repository` por meio de `itemId`.
+
+---
+
+#### 3. Tabela: `pagamento_repository`
+- **Descrição**: Armazena informações sobre os pagamentos efetuados.
+- **Colunas**:
+  - `id` (PK): Chave primária.
+  - `valor`: Valor do pagamento.
+  - `status`: Status do pagamento (ex.: pago, pendente).
+  - `identificador_pedido`: Identificador único do pedido.
+  - `qrcode`: QR Code associado ao pagamento.
+  - `pedidoId` (FK): Referência ao pedido pago (relacionamento com `pedido_repository`).
+  
+- **Relacionamentos**:
+  - FK `pedidoId`: Relacionado a `pedido_repository` (N:1).
+
+---
+
+#### 4. Tabela: `pedido_repository`
+- **Descrição**: Armazena os pedidos realizados pelos clientes.
+- **Colunas**:
+  - `id` (PK): Chave primária.
+  - `data`: Data do pedido.
+  - `status`: Status do pedido (ex.: em preparo, finalizado).
+  - `total`: Valor total do pedido.
+  - `clienteId` (FK): Referência ao cliente que realizou o pedido (relacionamento com `cliente_repository`).
+  
+- **Relacionamentos**:
+  - FK `clienteId`: Relacionado a `cliente_repository` (N:1).
+  - Relacionado a `pedido_item_repository` e `pagamento_repository`.
+
+---
+
+#### 5. Tabela: `cliente_repository`
+- **Descrição**: Armazena os dados dos clientes.
+- **Colunas**:
+  - `id` (PK): Chave primária.
+  - `idcognito`: Identificador do cliente no Cognito.
+  - `nome`: Nome do cliente.
+  - `cpf`: CPF do cliente.
+  - `email`: Email do cliente.
+  - `ultima_modificacao`: Data da última modificação nos dados do cliente.
+
+- **Relacionamentos**:
+  - Relacionado a `pedido_repository` por meio de `clienteId`.
+
+---
+
+### Relacionamentos Chave:
+
+#### Relacionamentos 1:N:
+- Um **cliente** pode fazer vários **pedidos** (`cliente_repository` -> `pedido_repository`).
+- Um **pedido** pode conter vários **itens** (`pedido_repository` -> `pedido_item_repository`).
+- Um **pedido** pode ter vários **pagamentos** associados (`pedido_repository` -> `pagamento_repository`).
+
+#### Relacionamentos N:1:
+- Cada item de pedido faz referência a um **item** único (`pedido_item_repository` -> `item_repository`).
+- Cada pagamento refere-se a um pedido específico (`pagamento_repository` -> `pedido_repository`).
+
+---
+
+### Regras de Integridade:
+- **Chaves Estrangeiras** garantem que um item de pedido sempre refira-se a um pedido existente e que o pedido esteja associado a um cliente.
+- **Integridade Referencial**: Deve ser garantido que exclusões e atualizações de registros sigam as regras estabelecidas, como a deleção em cascata, para garantir que registros de itens e pagamentos não fiquem órfãos se um pedido for removido.
+
 ## Observações
 
 - Este projeto foi desenvolvido para fins educacionais e demonstrativos.
