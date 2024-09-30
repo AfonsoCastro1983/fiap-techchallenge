@@ -91,6 +91,26 @@ A instância RDS gerencia nosso banco de dados PostgreSQL. Isso facilita a confi
 #### ECR Repository
 Por fim, o ECR armazena e gerencia nossas imagens Docker. Ele permite que enviemos nossas imagens Docker para a AWS e as utilizemos em diferentes serviços, como o EKS, facilitando a implantação da nossa aplicação.
 
+### Arquitetura do Módulo 3
+![alt text](lanchonete-arquitetura-md3.png)
+
+Para esta arquitetura, como uma evolução da pós-graduação, foi adicionado uma função Lambda para criar um formulário de criação e login de usuários, agora gerenciados pelo AWS Cognito. Seguindo a premissa de que o usuário pode também não se identificar para gerar um pedido.
+
+E para criar uma estrutura de segurança, tanto para o Kubernetes criado pelo módulo anterior quanto para o Lambda, foi criado um API Gateway para permitir acesso apenas a usuários cadastrados do sistema.
+
+### AWS Cognito
+O AWS Cognito é um serviço de autenticação e gerenciamento de identidades da AWS que facilita o registro, login e controle de acesso para aplicações web e móveis. Ele permite gerenciar usuários e autenticar-se diretamente ou através de provedores de identidade externos, como Google, Facebook, Apple e SAML. Cognito também oferece recursos como autenticação multifator (MFA), verificação de e-mail e número de telefone, além de integração com serviços da AWS para controle de acesso baseado em permissões. Ele simplifica a implementação de segurança e gerenciamento de identidades de maneira escalável e segura.
+
+#### AWS Lambda
+O AWS Lambda é um serviço de computação serverless da AWS que permite executar código em resposta a eventos sem a necessidade de provisionar ou gerenciar servidores. Ele suporta várias linguagens de programação, como Python, Node.js, Java, entre outras. O Lambda escala automaticamente com base na carga de trabalho e cobra apenas pelo tempo de execução do código, tornando-o uma solução eficiente em termos de custo. Ele pode ser acionado por eventos de diversos serviços da AWS, como S3, DynamoDB, API Gateway, entre outros, tornando-se uma ferramenta poderosa para aplicações orientadas a eventos e microserviços.
+
+#### AWS API Gateway
+O AWS API Gateway é um serviço gerenciado da AWS que facilita a criação, publicação, manutenção, monitoramento e segurança de APIs em escala.
+
+Ele atua como uma interface entre clientes e serviços backend, permitindo que você exponha funcionalidades e dados de aplicações através de APIs RESTful ou WebSocket.
+
+O API Gateway é altamente escalável e permite que desenvolvedores integrem serviços como AWS Lambda, EC2, ou bancos de dados como RDS de forma simplificada. Ele suporta autenticação, autorização e proteção contra ataques, como DDoS, com integração a serviços como AWS IAM e Amazon Cognito. Além disso, o API Gateway pode gerenciar tráfego de APIs, definir quotas e limites de requisições, e realizar transformações de dados para diferentes formatos de entrada e saída, tornando-se uma solução robusta para construir APIs seguras e escaláveis com facilidade.
+
 ## Domínios e Entidades
 
 O sistema inclui as seguintes classes de domínio:
@@ -272,18 +292,18 @@ Para mais detalhes sobre a modelagem e o design do sistema, acesse o quadro do M
 #### Diagrama Entidade-Relacionamento
 ![alt text](lanchonete-er.png)
 
-#### 1. Tabela: `pedido_item_repository`
-- **Descrição**: Armazena os itens que compõem os pedidos realizados pelos clientes.
+#### 1. Tabela: `cliente_repository`
+- **Descrição**: Armazena os dados dos clientes.
 - **Colunas**:
   - `id` (PK): Chave primária.
-  - `quantidade`: Quantidade do item no pedido.
-  - `preco`: Preço unitário do item.
-  - `pedidoId` (FK): Referência ao pedido no qual o item faz parte (relacionamento com `pedido_repository`).
-  - `itemId` (FK): Referência ao item (relacionamento com `item_repository`).
-  
+  - `idcognito`: Identificador do cliente no Cognito.
+  - `nome`: Nome do cliente.
+  - `cpf`: CPF do cliente.
+  - `email`: Email do cliente.
+  - `ultima_modificacao`: Data da última modificação nos dados do cliente.
+
 - **Relacionamentos**:
-  - FK `pedidoId`: Relacionado a `pedido_repository` (N:1).
-  - FK `itemId`: Relacionado a `item_repository` (N:1).
+  - Relacionado a `pedido_repository` por meio de `clienteId`.
 
 ---
 
@@ -302,22 +322,7 @@ Para mais detalhes sobre a modelagem e o design do sistema, acesse o quadro do M
 
 ---
 
-#### 3. Tabela: `pagamento_repository`
-- **Descrição**: Armazena informações sobre os pagamentos efetuados.
-- **Colunas**:
-  - `id` (PK): Chave primária.
-  - `valor`: Valor do pagamento.
-  - `status`: Status do pagamento (ex.: pago, pendente).
-  - `identificador_pedido`: Identificador único do pedido.
-  - `qrcode`: QR Code associado ao pagamento.
-  - `pedidoId` (FK): Referência ao pedido pago (relacionamento com `pedido_repository`).
-  
-- **Relacionamentos**:
-  - FK `pedidoId`: Relacionado a `pedido_repository` (N:1).
-
----
-
-#### 4. Tabela: `pedido_repository`
+#### 3. Tabela: `pedido_repository`
 - **Descrição**: Armazena os pedidos realizados pelos clientes.
 - **Colunas**:
   - `id` (PK): Chave primária.
@@ -332,18 +337,33 @@ Para mais detalhes sobre a modelagem e o design do sistema, acesse o quadro do M
 
 ---
 
-#### 5. Tabela: `cliente_repository`
-- **Descrição**: Armazena os dados dos clientes.
+#### 4. Tabela: `pedido_item_repository`
+- **Descrição**: Armazena os itens que compõem os pedidos realizados pelos clientes.
 - **Colunas**:
   - `id` (PK): Chave primária.
-  - `idcognito`: Identificador do cliente no Cognito.
-  - `nome`: Nome do cliente.
-  - `cpf`: CPF do cliente.
-  - `email`: Email do cliente.
-  - `ultima_modificacao`: Data da última modificação nos dados do cliente.
-
+  - `quantidade`: Quantidade do item no pedido.
+  - `preco`: Preço unitário do item.
+  - `pedidoId` (FK): Referência ao pedido no qual o item faz parte (relacionamento com `pedido_repository`).
+  - `itemId` (FK): Referência ao item (relacionamento com `item_repository`).
+  
 - **Relacionamentos**:
-  - Relacionado a `pedido_repository` por meio de `clienteId`.
+  - FK `pedidoId`: Relacionado a `pedido_repository` (N:1).
+  - FK `itemId`: Relacionado a `item_repository` (N:1).
+
+---
+
+#### 5. Tabela: `pagamento_repository`
+- **Descrição**: Armazena informações sobre os pagamentos efetuados.
+- **Colunas**:
+  - `id` (PK): Chave primária.
+  - `valor`: Valor do pagamento.
+  - `status`: Status do pagamento (ex.: pago, pendente).
+  - `identificador_pedido`: Identificador único do pedido.
+  - `qrcode`: QR Code associado ao pagamento.
+  - `pedidoId` (FK): Referência ao pedido pago (relacionamento com `pedido_repository`).
+  
+- **Relacionamentos**:
+  - FK `pedidoId`: Relacionado a `pedido_repository` (N:1).
 
 ---
 
@@ -369,4 +389,3 @@ Para mais detalhes sobre a modelagem e o design do sistema, acesse o quadro do M
 - Este projeto foi desenvolvido para fins educacionais e demonstrativos.
 - O código pode ser adaptado e expandido para atender às necessidades de um sistema real de lanchonete.
 - Para mais informações sobre o código e a arquitetura do projeto, consulte os arquivos de código-fonte e a documentação interna.
-```
